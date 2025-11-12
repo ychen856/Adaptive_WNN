@@ -1,9 +1,9 @@
 # src/train/train_wnn.py
 from pathlib import Path
 import json
-from dataio.mapping import make_tuple_mapping, audit_mapping
-from core.wisard import WiSARD
-from prune import *
+from src.dataio.mapping import make_tuple_mapping, audit_mapping
+from src.core.wisard import WiSARD
+from src.prune import *
 from src.core.decision import compute_lut_priority_entropy
 from src.tools.export import export_profile_bundle
 from src.tools.loader import load_profile_bundle

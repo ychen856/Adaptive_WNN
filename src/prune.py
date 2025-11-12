@@ -1,6 +1,6 @@
 from collections import defaultdict
 from typing import List, Tuple, Dict
-from tools.utils import _assert_power_of_two
+from src.tools.utils import _assert_power_of_two
 from src.dataio.encode import bucket_mapper_mnist_thermo
 import numpy as np
 
