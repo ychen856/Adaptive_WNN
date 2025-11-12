@@ -1,5 +1,5 @@
 ## python:
-Adaptive_WNN>python -m src.train.py <br\>
+Adaptive_WNN>python -m src.train.py <br/>
 export files Adaptive_WNN/src/exports/foldername
 
 ## FPGA usage:
