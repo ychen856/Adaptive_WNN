@@ -1,0 +1,13 @@
+{
+  "num_classes": 12,
+  "num_luts": 128,
+  "address_bits": 8,
+  "endianness": "little",
+  "tuple_mapping": [
+    [17,90,13,44,7,3,65,2],
+    "... more L entries ..."
+  ],
+  "enable_mask": [1,1,0,1],
+  "bleach": {"enabled": true, "start": 2, "min": 0},
+  "reject": {"enabled": true, "min_top": 3, "min_margin": 2}
+}
