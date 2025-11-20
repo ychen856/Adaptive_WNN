@@ -1,6 +1,8 @@
 # src/train/train_wnn.py
 from pathlib import Path
 import json
+import torch
+import torch.nn.functional as F
 from src.dataio.mapping import make_tuple_mapping, audit_mapping
 from src.core.wisard import WiSARD
 from src.prune import *
@@ -10,9 +12,11 @@ from src.tools.loader import load_profile_bundle
 from src.tools.utils import make_per_lut_kcap
 from test import *
 from src.core.infer import *
-
+from src.core.multiLayerWNN import MultiLayerWNN
+from src.dataio.encode import minmax_normalize, thermometer_encode, dt_thermometer_encode, compute_dt_thresholds
 from torchvision import transforms
-
+from torch.utils.data import TensorDataset, DataLoader
+import torch.nn.utils as nn_utils
 from test.eval import eval_grid_bits_luts
 
 # from core.decision import tune_decision  #  Step 2
@@ -39,6 +43,78 @@ def load_or_create_mapping(bit_len, tiles, num_luts, addr_bits, seed=42, save_pa
     return mapping
 
 
+def get_lr(epoch):
+    if epoch < 25:
+        return 1e-3
+    elif epoch < 55:
+        return 3e-4
+    else:
+        return 1e-4
+
+def compute_accuracy(logits, y):
+    preds = logits.argmax(dim=1)
+    return (preds == y).float().mean().item()
+
+
+def train_model(model, train_loader, val_loader, device,
+                num_epochs=50, base_lr=1e-3):
+    model.to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=base_lr)
+
+    best_state = None
+    best_val_acc = 0.0
+
+    for epoch in range(num_epochs):
+        # ---- train one epoch ----
+        model.train()
+        for xb, yb in train_loader:
+            xb = xb.to(device)
+            yb = yb.to(device)
+
+            optimizer.zero_grad()
+            logits = model(xb)
+            loss = F.cross_entropy(logits, yb)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer.step()
+
+        # ---- eval on train / val using *same* function ----
+        train_loss, train_acc = eval_epoch(model, train_loader, device)
+        val_loss, val_acc = eval_epoch(model, val_loader, device)
+
+        print(
+            f"Epoch {epoch:03d} | train_loss={train_loss:.4f} | "
+            f"train_acc={train_acc*100:.2f}% | val_acc={val_acc*100:.2f}%"
+        )
+
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            best_state = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+
+    if best_state is not None:
+        model.load_state_dict(best_state)
+    return model
+
+
+@torch.no_grad()
+def collect_hidden_activations(model, data_loader, device):
+    model.eval()
+    all_h = []
+    all_y = []
+
+    for xb, yb in data_loader:
+        xb = xb.to(device)
+        yb = yb.to(device)
+
+        logits, h_last = model(xb, return_hidden=True)  # the forwarding need to be able to support return_hidden
+        all_h.append(h_last.cpu())
+        all_y.append(yb.cpu())
+
+    H = torch.cat(all_h, dim=0)
+    Y = torch.cat(all_y, dim=0)
+    return H, Y
+
+
 if __name__ == "__main__":
     # load dataset
     print('data/model initialization...')
@@ -52,188 +128,99 @@ if __name__ == "__main__":
                                        test_labels_filepath)
     (x_train, y_train), (x_test, y_test) = mnist_dataloader.load_data()
 
-    # encoding
-    '''
-    x_train_bit_vec, meta = encode_batch(x_train, tiles=(4, 4), levels=8)
-    x_test_bit_Vec, _ = encode_batch(x_test, tiles=(4, 4), levels=8)'''
 
-    # encode + sobel
-    x_train_bit_vec, meta = encode_batch_thermo_plus_sobel(
-        x_train, tiles=(4, 4), levels=8, sobel_threshold_ratio=0.2
-    )
-    x_test_bit_Vec, _ = encode_batch_thermo_plus_sobel(
-        x_test, tiles=(4, 4), levels=8, sobel_threshold_ratio=0.2
-    )
 
-    random.seed(time.time())
-    seed = random.randint(0, 100)
+    # CPU or GPU
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # tiling
-    NUM_LUTS = 512
-    ADDR_BITS = 7
-    tuple_mapping = load_or_create_mapping(meta["total_bits"], None, NUM_LUTS, ADDR_BITS, seed)
+    
+    z = 32  # 16 / 32 / 64
+    # oneshot: use the training dataset, calculate DT thresholds + normalization
+    thresholds, xmin, xmax = compute_dt_thresholds(x_train, z=z)
 
-    stats = audit_mapping(tuple_mapping, meta["total_bits"])
-    print("[mapping audit]", stats)
+    # Encode train / test
+    x_train_bits = dt_thermometer_encode(x_train.to(device), thresholds, xmin, xmax)
+    x_test_bits   = dt_thermometer_encode(x_test.to(device),   thresholds, xmin, xmax)
 
-    # optional: save mapping and meta
-    with open("D:/workspace/Adaptive_WNN/models/meta/model_meta.json", "w", encoding="utf-8") as f:
-        json.dump({
-            **meta,
-            "address_bits": ADDR_BITS,
-            "endianness": "little",
-            "tuple_mapping_path": "D:/workspace/Adaptive_WNN/models/meta/model_meta.json"
-        }, f, indent=2)
+    '''# normalize & encode
+    x_train_norm = minmax_normalize(x_train)
+    x_val_norm   = minmax_normalize(x_test)
 
-    # train WiSARD
-    print('train dataset...')
+    x_train_bits = thermometer_encode(x_train_norm, z=z)
+    x_val_bits   = thermometer_encode(x_val_norm, z=z)'''
+
+
+    in_bits = x_train_bits.size(1)
+
+    train_ds = TensorDataset(x_train_bits, y_train)
+    val_ds   = TensorDataset(x_test_bits, y_test)
+    train_loader = DataLoader(train_ds, batch_size=256, shuffle=True)
+    test_loader   = DataLoader(val_ds, batch_size=512, shuffle=False)
+
+
     C = 10
-    model = WiSARD(
-        num_classes=C,
-        num_luts_per_class=NUM_LUTS,
-        address_bits=ADDR_BITS,
-        tuple_mapping=tuple_mapping,
-        value_dtype=np.uint16,
-        endianness="little",
-    )
-    model.fit(x_train_bit_vec, y_train, batch=512)
 
-    # get accuracy baseline
-    full_mask = np.ones(model.num_luts_per_class, dtype=np.float32)
-    acc_full = eval_masked(model, x_test_bit_Vec, y_test, full_mask, alpha=1.0)
-    print("accuracy baseline(full)=", acc_full)
+    model = MultiLayerWNN(
+        in_bits=in_bits,
+        num_classes=10,
+        lut_input_size=6,
+        hidden_luts=(2000, 1000),  # 
+        tau=0.165,               # Table 15 x 1/0.165 (~= 0.165)
+    ).to(device)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
 
-    ##################################################
-    # LUT pruning
-    ##################################################
-    print('LUT pruning...')
-    # get heuristic LUP priority (w lut)
-    priority_entropy = compute_lut_priority_entropy(model)
+    # train
+    model = train_model(model, train_loader, test_loader, device,
+                        num_epochs=30, base_lr=1e-3)
 
-    # accuracy under different entropy
-    keep_ratios = [1.0, 0.75, 0.5, 0.25]
-    w_lut = model.compute_lut_weights(model, x_train_bit_vec[:1000], y_train[:1000], alpha=1.0)
+    # baseline
+    train_loss_before, train_acc_before = eval_epoch(model, train_loader, device)
+    test_loss_before,  test_acc_before  = eval_epoch(model, test_loader,  device)
+    print(f"[Before pruning] train_acc={train_acc_before*100:.2f}%, "
+        f"test_acc={test_acc_before*100:.2f}%")
 
-    for r in keep_ratios:
-        mask, _ = make_keep_mask(w_lut, r)
-        acc_mask = eval_masked(model, x_test_bit_Vec, y_test, mask)
-        print(f"[LUT pruning] LUT_keep_ratio={r:.2f} -> acc={acc_mask:.4f}")
+    # 3) collect hidden layer + create pruned classifier
+    H, Y = collect_hidden_activations(model, train_loader, device)
+    #importance = compute_importance_mean_abs(H)
+    #keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.9, min_keep=64)
+    importance = compute_importance_weighted(H, model)
+    keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.5, min_keep=64)
+    print("Hidden dims before:", H.shape[1], "after:", keep_idx.numel())
 
+    # 4) evaluation
+    train_loss_after, train_acc_after = eval_epoch(model, train_loader, device)
+    test_loss_after,  test_acc_after  = eval_epoch(model, test_loader,  device)
+    print(f"[After pruning]  train_acc={train_acc_after*100:.2f}%, "
+        f"test_acc={test_acc_after*100:.2f}%")
 
-    #######################################
-    # bit pruning
-    #######################################
-    # Given: model, tuple_mapping, bit_priority, X_test_bits, y_test
-
-    lut_priority = compute_lut_priority_entropy(model)
-    bit_priority = compute_bit_priority_entropy(x_test_bit_Vec, y_test, C)
-
-    # adaptive bit pruning rate
-    caps = make_per_lut_kcap(lut_priority, top_ratio=0.2, low_ratio=0.3,
-                             top_cap=7, mid_cap=5, low_cap=4)
-    # build with soft coverage + (global or per-LUT) k_cap
-    prof = build_runtime_profile_per_lut_adaptive3(
-        model, tuple_mapping, bit_priority,
-        bits_keep_ratio=1, X_bits_val=x_train_bit_vec[:1000],
-        coverage_mode="soft", coverage_r=1, coverage_k_threshold=4,
-        H_min=1.8, U_min=48, H_target=2.6, dH_min=0.02,
-        k_cap=caps  # or k_cap=caps (per-LUT array from make_per_lut_kcap)
-    )
-    acc = eval_with_profile_varm(prof, x_test_bit_Vec, y_test, mode="log_posterior")
-    stat = profile_stats(prof, n_full=7)
-    print(f"acc={acc:.4f} comp={stat['compression']:.3f} avg_m={stat['avg_m']:.2f}")
-
-
-    ##############################################
-    # global pruning w adaptive auto sensing pruning rate
-    ##############################################
-    prof_pass1 = build_runtime_profile_per_lut_adaptive3(
-        model, tuple_mapping, bit_priority,
-        bits_keep_ratio=1.0, X_bits_val=x_train_bit_vec[:1000],
-        coverage_mode="soft", coverage_r=1, coverage_k_threshold=4,
-        H_min=1.8, U_min=48, H_target=2.6, dH_min=0.02,
-        k_cap=7  # let LUT find its dynamic k_final
-    )
-    # get each LUT's k
-    k_nat = np.array([row["k_final"] for row in prof_pass1["meta"]], dtype=np.int32)
-
-    # lut_priority
-    order = np.argsort(-lut_priority)
-    L = len(order)
-    top = set(order[:int(0.20 * L)])
-    low = set(order[-int(0.30 * L):])
-
-    caps = k_nat.copy()
-    for i in range(L):
-        if i in top:
-            caps[i] = min(7, k_nat[i] + 1)  # for important LUT
-        elif i in low:
-            caps[i] = max(4, k_nat[i] - 1)  # not important LUT
+    # finetuning
+    for name, p in model.named_parameters():
+        if "table" in name:
+            p.requires_grad = False  # don't update LUT
         else:
-            caps[i] = np.clip(k_nat[i], 5, 6)
+            p.requires_grad = True   # classifier can be updated
 
-    prof_pass2 = build_runtime_profile_per_lut_adaptive3(
-        model, tuple_mapping, bit_priority,
-        bits_keep_ratio=1.0, X_bits_val=x_train_bit_vec,
-        coverage_mode="soft", coverage_r=1, coverage_k_threshold=4,
-        H_min=1.8, U_min=48, H_target=2.6, dH_min=0.02,
-        k_cap=caps  # ← dynamic per-LUT upper bound
-    )
-    acc = eval_with_profile_varm(prof_pass2, x_test_bit_Vec, y_test, mode="log_posterior")
-    stats = profile_stats_total(prof_pass2, n_full=7, L_full=len(tuple_mapping))
-    print(f"acc={acc:.4f}  L_comp={stats['L_comp']:.3f}  Addr_comp={stats['addr_comp']:.3f}  "
-          f"Total={stats['total_comp']:.3f}  avg_m={stats['avg_m']:.2f}")
-
-    keep_ids = select_top_luts_by_priority(lut_priority, keep_ratio=0.5)
-    prof_joint = drop_profile_to_luts(prof_pass2, keep_ids)
-    acc = eval_with_profile_varm(prof_joint, x_test_bit_Vec, y_test)
-    stats = profile_stats_total(prof_joint, n_full=7, L_full=len(tuple_mapping))
-    print(f"[JOINT] acc={acc:.4f}  L_comp={stats['L_comp']:.3f}  "
-          f"Addr_comp={stats['addr_comp']:.3f}  Total={stats['total_comp']:.3f}  avg_m={stats['avg_m']:.2f}")
-
-
-    ############################################
-    # final version -- adaptive bit + LUT joint budget pruning
-    ############################################
-    # given：model, tuple_mapping, bit_priority, lut_priority,
-    #             X_train_bits, X_test_bits, y_test
-    print('global budget pruning...')
-
-    for bk in [1.0, 0.9, 0.8, 0.7, 0.6]:
-        for r in [1.0, 0.9, 0.8, 0.7, 0.6]:
-            # ex：JOINT-BUDGET
-            prof, keep_ids, k_global = build_joint_budget_profile(
-                model, tuple_mapping, bit_priority, lut_priority, x_train_bit_vec[:1000],
-                luts_keep_ratio=r, addr_budget_ratio=bk, n_full=7,
-                H_target=2.6, coverage_k_threshold=4, coverage_r=1,
-                bucket_mapper=bucket_mapper_mnist_thermo
-            )
-
-            acc = eval_with_profile_varm(prof, x_test_bit_Vec, y_test, mode="log_posterior")
-            stats = profile_stats_total(prof, n_full=7, L_full=len(tuple_mapping))
-            print(f"[JOINT-BUDGET] acc={acc:.4f}  L_comp={stats['L_comp']:.3f}  "
-                f"Addr_comp={stats['addr_comp']:.3f}  Total={stats['total_comp']:.3f}  "
-                f"avg_m={stats['avg_m']:.2f}")
-
-    print('export...')
-    print(profile_stats_total(prof_joint, n_full=7, L_full=len(tuple_mapping)))
-    out_dir = "D:/workspace/Adaptive_WNN/src/exports/test_export/"
-
-
-    # === export ===
-    # given profile（bit-only or jointly pruned profile）
-    export_profile_bundle(
-        out_dir=out_dir,
-        profile=prof_joint,
-        tuple_mapping_pruned=tuple_mapping,  # can be None
-        keep_ids=keep_ids,  # if LUT prune, else None
-        include_coe=False
+    optimizer_ft = torch.optim.Adam(
+        filter(lambda p: p.requires_grad, model.parameters()),
+        lr=1e-3
     )
 
+    for epoch in range(5):
+        model.train()
+        for xb, yb in train_loader:
+            xb = xb.to(device)
+            yb = yb.to(device)
 
-    # === import + eval ===
-    bundle = load_profile_bundle(out_dir)
-    acc = eval_with_profile_varm(bundle, x_test_bit_Vec, y_test)
+            optimizer_ft.zero_grad()
+            logits = model(xb)
+            loss = F.cross_entropy(logits, yb)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            optimizer_ft.step()
 
-    print("eval acc =", acc)
+        _, train_acc_ft = eval_epoch(model, train_loader, device)
+        _, test_acc_ft  = eval_epoch(model, test_loader,  device)
+        print(f"[Finetune {epoch}] train_acc={train_acc_ft*100:.2f}%, "
+            f"test_acc={test_acc_ft*100:.2f}%")

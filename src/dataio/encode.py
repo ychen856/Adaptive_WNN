@@ -68,6 +68,16 @@ def _normalize(x: ArrayLike, input_range: Optional[Tuple[float, float]] = (0, 25
     z = np.clip(z, 0.0, 1.0)
     return z.astype(np.float32)
 
+############################
+# 
+############################
+def minmax_normalize(x, eps=1e-8):
+    """
+    x: [N, D]
+    """
+    xmin = x.min(dim=0, keepdim=True)[0]
+    xmax = x.max(dim=0, keepdim=True)[0]
+    return (x - xmin) / (xmax - xmin + eps)
 
 ############################
 # tiling + thermometer
@@ -161,6 +171,98 @@ def encode_batch(images: np.ndarray, tiles=(4,4), levels=8) -> Tuple[np.ndarray,
             meta_ref = meta
     X_bits = np.stack(X_bits_list, axis=0)  # (N, total_bits)
     return X_bits, meta_ref
+
+############################
+#
+############################
+def compute_dt_thresholds(x_train, z=32, eps=1e-8, max_elems=2_000_000):
+    """
+    x_train: [N, 28, 28] or [N, D]
+    return:
+      thresholds: [z]  (global quantiles, on CPU)
+      xmin, xmax: [1, D] (for normalize; on CPU)
+    """
+    # 1) flatten -> [N, D]
+    if x_train.dim() > 2:
+        x = x_train.view(x_train.size(0), -1)
+    else:
+        x = x_train
+
+    x = x.float().cpu()
+
+    # 2) feature-wise's min/max, normalize should use the same set
+    xmin = x.min(dim=0, keepdim=True)[0]
+    xmax = x.max(dim=0, keepdim=True)[0]
+    x_norm = (x - xmin) / (xmax - xmin + eps)
+
+    # 3) flatten to a global quantile row
+    flat = x_norm.view(-1)  # [N*D]
+    n = flat.numel()
+
+    if n > max_elems:
+        # sampling
+        step = max(1, n // max_elems)
+        idx = torch.arange(0, n, step=step)
+        if idx.numel() > max_elems:
+            idx = idx[:max_elems]
+        flat_sample = flat[idx]
+    else:
+        flat_sample = flat
+
+    # 4) calcualte z scores（remove 0 and 1）
+    q = torch.linspace(0, 1, steps=z+2)[1:-1]  # [z]
+    thresholds = torch.quantile(flat_sample, q)
+
+    return thresholds, xmin, xmax
+
+def dt_thermometer_encode(x, thresholds, xmin, xmax, eps=1e-8):
+    """
+    x: [B, 28, 28] or [B, D]
+    thresholds, xmin, xmax: from compute_dt_thresholds (in CPU)
+    """
+    device = x.device
+
+    if x.dim() > 2:
+        x = x.view(x.size(0), -1)
+    x = x.float()
+
+    xmin_dev = xmin.to(device)
+    xmax_dev = xmax.to(device)
+    th_dev   = thresholds.to(device)
+
+    x = (x - xmin_dev) / (xmax_dev - xmin_dev + eps)  
+    B, D = x.shape
+
+    x_exp = x.unsqueeze(-1)            # [B, D, 1]
+    bits = (x_exp > th_dev).float()   # [B, D, z]
+    return bits.view(B, D * len(th_dev))
+
+
+def thermometer_encode(x, z=32, eps=1e-8):
+    """
+    x: [B, D] or [B, C, H, W] / [B, H, W]
+    auto do:
+      1) flatten to [B, D]
+      2) normalize to [0, 1]
+      3) do thermometer encoding -> [B, D*z]
+    """
+    # 1) if is image (3D/4D), flatten
+    if x.dim() > 2:
+        x = x.view(x.size(0), -1)     # [B, D]
+
+    # 2) convert into float and normalize to [0,1]
+    x = x.float()
+    xmin = x.min(dim=0, keepdim=True)[0]
+    xmax = x.max(dim=0, keepdim=True)[0]
+    x = (x - xmin) / (xmax - xmin + eps)
+
+    # 3) thermometer encoding
+    B, D = x.shape
+    device = x.device
+    thresholds = torch.linspace(0, 1, steps=z+1, device=device)[1:]  # [z]
+    x_exp = x.unsqueeze(-1)                    # [B, D, 1]
+    bits = (x_exp > thresholds).float()       # [B, D, z]
+    return bits.view(B, D * z)                # [B, D*z]
 
 
 ############################

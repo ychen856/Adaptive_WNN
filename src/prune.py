@@ -3,6 +3,9 @@ from typing import List, Tuple, Dict
 from src.tools.utils import _assert_power_of_two
 from src.dataio.encode import bucket_mapper_mnist_thermo
 import numpy as np
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 
 def make_keep_mask(w_lut, keep_ratio):
@@ -300,3 +303,73 @@ def select_local_bits_soft_coverage(
     else:
         # non-coverage phase (free to compress)
         return sorted([p for p, _ in local_scored[:k]])
+    
+
+
+##############################
+#
+#####################3########
+@torch.no_grad()
+def collect_hidden_activations(model, data_loader, device):
+    """
+    collect the last hidden h_last
+    return:
+      H: [N, H]  (put all the sample into a table)
+      Y: [N]     (corresponding label)
+    """
+    model.eval()
+    all_h = []
+    all_y = []
+
+    for xb, yb in data_loader:
+        xb = xb.to(device)
+        yb = yb.to(device)
+
+        logits, h_last = model(xb, return_hidden=True)  # h_last: [B, H]
+        all_h.append(h_last.cpu())
+        all_y.append(yb.cpu())
+
+    H = torch.cat(all_h, dim=0)  # [N, H]
+    Y = torch.cat(all_y, dim=0)  # [N]
+    return H, Y
+
+
+def compute_importance_weighted(H: torch.Tensor, model: nn.Module):
+    """
+    H: [N, H] last hidden's activation
+    model: pretrained WNN (includes classifier)
+
+    importance_j = std(h_j) * sum_c |W[c,j]|
+    """
+    with torch.no_grad():
+        std = H.std(dim=0)                    # [H]
+        W = model.classifier.weight.data      # [C, H]
+        w_abs = W.abs().sum(dim=0)            # [H]
+        importance = std * w_abs
+    return importance
+
+def build_pruned_classifier(model, importance, keep_ratio=0.5, min_keep=64):
+    """
+    according to the importance, select the keeped hidden dimension
+    create classifier, and put the keep_idx back model
+    """
+    device = next(model.parameters()).device
+    H = importance.numel()
+
+    keep_dim = max(min_keep, int(H * keep_ratio))
+    keep_dim = min(keep_dim, H)
+
+    _, idx = torch.topk(importance, k=keep_dim, largest=True, sorted=True)
+    keep_idx = idx.to(device)
+
+    old_W = model.classifier.weight.data  # [C, H]
+    W_pruned = old_W[:, keep_idx]        # [C, keep_dim]
+
+    num_classes = old_W.size(0)
+    new_classifier = nn.Linear(keep_dim, num_classes, bias=False).to(device)
+    new_classifier.weight.data.copy_(W_pruned)
+
+    model.classifier = new_classifier
+    model.keep_idx = keep_idx    # forward check
+
+    return keep_idx

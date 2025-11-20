@@ -1,6 +1,9 @@
 # src/train/train_wnn.py
 import time
 import random
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from typing import Dict, List, Tuple
 
 import numpy as np
@@ -132,6 +135,46 @@ def predict_with_profile_varm(profile: Dict, bit_vec: np.ndarray, mode: str = "l
 
     return int(np.argmax(scores))
 
+##############################
+#
+##############################
+@torch.no_grad()
+def eval_acc(model, data_loader, device):
+    model.eval()
+    total = 0
+    correct = 0
+    for xb, yb in data_loader:
+        xb = xb.to(device)
+        yb = yb.to(device)
+        logits = model(xb)
+        preds = logits.argmax(dim=1)
+        total += yb.numel()
+        correct += (preds == yb).sum().item()
+    return correct / total
+
+
+@torch.no_grad()
+def eval_epoch(model, data_loader, device):
+    model.eval()
+    total_loss = 0.0
+    total_correct = 0
+    total_samples = 0
+
+    for xb, yb in data_loader:
+        xb = xb.to(device)
+        yb = yb.to(device)
+
+        logits = model(xb)  
+        loss = F.cross_entropy(logits, yb)
+
+        preds = logits.argmax(dim=1)
+        total_correct += (preds == yb).sum().item()
+        total_samples += yb.numel()
+        total_loss += loss.item() * yb.numel()
+
+    avg_loss = total_loss / total_samples
+    acc = total_correct / total_samples
+    return avg_loss, acc
 
 
 if __name__ == "__main__":
