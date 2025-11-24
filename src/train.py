@@ -4,24 +4,17 @@ import json
 import torch
 import torch.nn.functional as F
 from src.dataio.mapping import make_tuple_mapping, audit_mapping
-from src.core.wisard import WiSARD
 from src.prune import *
-from src.core.decision import compute_lut_priority_entropy
-from src.tools.export import export_profile_bundle
-from src.tools.loader import load_profile_bundle
-from src.tools.utils import make_per_lut_kcap
 from test import *
 from src.core.infer import *
 from src.core.multiLayerWNN import MultiLayerWNN
 from src.dataio.encode import minmax_normalize, thermometer_encode, dt_thermometer_encode, compute_dt_thresholds
 from torchvision import transforms
 from torch.utils.data import TensorDataset, DataLoader
-import torch.nn.utils as nn_utils
-from test.eval import eval_grid_bits_luts
 
 # from core.decision import tune_decision  #  Step 2
 
-CANONICAL_MAPPING = Path("D:/workspace/Adaptive_WNN/models/meta/tuple_mapping.json")
+CANONICAL_MAPPING = Path("~/Users/yi-chunchen/workspace/Adaptive_WNN/models/meta/tuple_mapping.json")
 
 def load_or_create_mapping(bit_len, tiles, num_luts, addr_bits, seed=42, save_path=CANONICAL_MAPPING):
     save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -115,10 +108,58 @@ def collect_hidden_activations(model, data_loader, device):
     return H, Y
 
 
+import numpy as np
+
+def export_wnn_for_fpga(model, path: str, quant_bits: int = None):
+    """
+    pack the MultiLayerWNNLUT and connection structure into a .npz file,
+    in order to facilitate parsing and initialization on FPGA
+    If quant_bits is not None (e.g., 8, 16), simple symmetric quantization is performed:
+      table_q = round(table * scale), and scale is saved together.
+    """
+    model_cpu = model.cpu()
+    layers = list(model_cpu.layers)
+    num_layers = len(layers)
+
+    export_data = {}
+    export_data["num_layers"] = num_layers
+    export_data["input_bits"] = layers[0].in_bits
+    export_data["num_classes"] = model_cpu.classifier.out_features
+
+    # classifier
+    W_cls = model_cpu.classifier.weight.detach().numpy().astype(np.float32)
+    export_data["classifier_weight"] = W_cls  # shape [C, H_last]
+
+    # per layer
+    for l, layer in enumerate(layers):
+        prefix = f"layer{l}_"
+        export_data[prefix + "in_bits"] = int(layer.in_bits)
+        export_data[prefix + "num_luts"] = int(layer.num_luts)
+        export_data[prefix + "lut_input_size"] = int(layer.lut_input_size)
+
+        conn = layer.conn_idx.detach().cpu().numpy().astype(np.int32)  # [num_luts, k]
+        export_data[prefix + "conn_idx"] = conn
+
+        table = layer.table.detach().cpu().numpy().astype(np.float32)  # [num_luts, 2^k]
+
+        if quant_bits is not None:
+            qmax = 2 ** (quant_bits - 1) - 1
+            max_abs = np.max(np.abs(table)) + 1e-8
+            scale = qmax / max_abs
+            table_q = np.round(table * scale).astype(np.int16)
+            export_data[prefix + "table_q"] = table_q
+            export_data[prefix + "table_scale"] = np.float32(1.0 / scale)
+        else:
+            export_data[prefix + "table"] = table
+
+    np.savez_compressed(path, **export_data)
+    print(f"[export_wnn_for_fpga] Saved WNN config to {path}")
+
+
 if __name__ == "__main__":
     # load dataset
     print('data/model initialization...')
-    input_path = 'D:/workspace/Adaptive_WNN/datasets'
+    input_path = '/workspace/Adaptive_WNN/datasets'
     training_images_filepath = join(input_path, 'train-images-idx3-ubyte/train-images-idx3-ubyte')
     training_labels_filepath = join(input_path, 'train-labels-idx1-ubyte/train-labels-idx1-ubyte')
     test_images_filepath = join(input_path, 't10k-images-idx3-ubyte/t10k-images-idx3-ubyte')
@@ -164,63 +205,48 @@ if __name__ == "__main__":
         in_bits=in_bits,
         num_classes=10,
         lut_input_size=6,
-        hidden_luts=(2000, 1000),  # 
+        hidden_luts=(2000, 1000),  # (2000, 1000)
         tau=0.165,               # Table 15 x 1/0.165 (~= 0.165)
     ).to(device)
-
+    
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
-
-    # train
-    model = train_model(model, train_loader, test_loader, device,
-                        num_epochs=30, base_lr=1e-3)
+    # load pre-trained unpruned model  
+    model.load_state_dict(torch.load("/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_unpruned.pth", map_location=device))
 
     # baseline
     train_loss_before, train_acc_before = eval_epoch(model, train_loader, device)
     test_loss_before,  test_acc_before  = eval_epoch(model, test_loader,  device)
     print(f"[Before pruning] train_acc={train_acc_before*100:.2f}%, "
         f"test_acc={test_acc_before*100:.2f}%")
+    
 
-    # 3) collect hidden layer + create pruned classifier
-    H, Y = collect_hidden_activations(model, train_loader, device)
-    #importance = compute_importance_mean_abs(H)
-    #keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.9, min_keep=64)
-    importance = compute_importance_weighted(H, model)
-    keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.5, min_keep=64)
-    print("Hidden dims before:", H.shape[1], "after:", keep_idx.numel())
+    # bit / lut pruning with different budgets
+    for bit_rate in [1.0, 0.9, 0.8, 0.7, 0.6]:
+        for lut_rate in [1.0, 0.9, 0.8, 0.7, 0.6]:
+            print('bit rate: ', bit_rate)
+            print('lut_rate: ', lut_rate)
+            C = 10
 
-    # 4) evaluation
-    train_loss_after, train_acc_after = eval_epoch(model, train_loader, device)
-    test_loss_after,  test_acc_after  = eval_epoch(model, test_loader,  device)
-    print(f"[After pruning]  train_acc={train_acc_after*100:.2f}%, "
-        f"test_acc={test_acc_after*100:.2f}%")
+            model = MultiLayerWNN(
+                in_bits=in_bits,
+                num_classes=10,
+                lut_input_size=6,
+                hidden_luts=(2000, 1000),  # (2000, 1000)
+                tau=0.165,               # Table 15 x 1/0.165 (~= 0.165)
+            ).to(device)
+            model.load_state_dict(torch.load("/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_unpruned.pth", map_location=device))
 
-    # finetuning
-    for name, p in model.named_parameters():
-        if "table" in name:
-            p.requires_grad = False  # don't update LUT
-        else:
-            p.requires_grad = True   # classifier can be updated
+            model_pruned = prune_wnn_with_budget_global(
+                model,
+                train_loader,
+                test_loader,
+                device,
+                bit_keep_global=bit_rate,
+                lut_keep_global=lut_rate,
+                k_min=3,
+                finetune_epochs=5,
+            )
 
-    optimizer_ft = torch.optim.Adam(
-        filter(lambda p: p.requires_grad, model.parameters()),
-        lr=1e-3
-    )
-
-    for epoch in range(5):
-        model.train()
-        for xb, yb in train_loader:
-            xb = xb.to(device)
-            yb = yb.to(device)
-
-            optimizer_ft.zero_grad()
-            logits = model(xb)
-            loss = F.cross_entropy(logits, yb)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
-            optimizer_ft.step()
-
-        _, train_acc_ft = eval_epoch(model, train_loader, device)
-        _, test_acc_ft  = eval_epoch(model, test_loader,  device)
-        print(f"[Finetune {epoch}] train_acc={train_acc_ft*100:.2f}%, "
-            f"test_acc={test_acc_ft*100:.2f}%")
+            # export pruned model for FPGA
+            export_wnn_for_fpga(model_pruned, f"/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_pruned_br{int(bit_rate*100)}_lr{int(lut_rate*100)}.npz", quant_bits=16)

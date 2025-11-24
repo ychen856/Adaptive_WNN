@@ -3,26 +3,35 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class WNNLUTLayer(nn.Module):
-    def __init__(self, in_bits, num_luts, lut_input_size=6, init_std=0.01):
-        super().__init__()
+    def __init__(self, in_bits, num_luts, lut_input_size=6, conn_idx=None, init_std=0.01):
+        super().__init__()   
+
         self.in_bits = in_bits
         self.num_luts = num_luts
         self.lut_input_size = lut_input_size
 
-        # random selection: each LUT, take #lut_input_size of bits
-        conn = torch.randint(
-            low=0,
-            high=in_bits,
-            size=(num_luts, lut_input_size),
-            dtype=torch.long,
-        )
-        self.register_buffer("conn_idx", conn)   # [num_luts, k]
+        # randomly or externally given conn_idx
+        if conn_idx is None:
+            conn = torch.randint(
+                low=0,
+                high=in_bits,
+                size=(num_luts, lut_input_size),
+                dtype=torch.long,
+            )
+        else:
+            conn = conn_idx.clone().long()
 
-        # LUT table: [num_luts, 2^k]
-        self.table = nn.Parameter(
-            torch.zeros(num_luts, 2 ** lut_input_size)
-        )
-        nn.init.normal_(self.table, mean=0.0, std=init_std)
+        # only here can register buffer
+        self.register_buffer("conn_idx", conn)
+
+        # initialize LUT table
+        table = torch.zeros(num_luts, 2 ** lut_input_size)
+        table = table.normal_(mean=0.0, std=init_std)
+        self.table = nn.Parameter(table)
+
+        # powers for bit → index
+        powers = (2 ** torch.arange(lut_input_size)).float()
+        self.register_buffer("powers", powers.view(1, 1, -1))
 
     def forward(self, x_bits):
         """

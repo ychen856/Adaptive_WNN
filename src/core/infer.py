@@ -2,9 +2,8 @@ from collections import defaultdict
 
 import numpy as np
 from typing import List, Dict, Tuple, Set, Optional, Union, Sequence
+from src.prune import _reduce_counts_for_lut, select_local_bits_soft_coverage, select_top_luts_by_priority
 from src.tools.utils import _assert_power_of_two, _lut_addr_entropy_unique
-from src.prune import _reduce_counts_for_lut, select_local_bits_soft_coverage, \
-    select_top_luts_by_priority
 from src.tools.utils import _addr_from_bits
 from src.dataio.encode import bucket_mapper_mnist_thermo
 import heapq
@@ -27,10 +26,10 @@ def build_runtime_profile_per_lut_adaptive(model,
       2) get (C, 2^m_l)
       3) verify H/unique: if lower than (H_min, U_min) -> k += 1, until converge or k reach the upper bound (n or k_cap)
 
-    回傳：
+    Return:
       {
         "lut_tables": [ (C, 2^m_l) ... ],
-        "kept_global_bits_per_lut": [ [gbits...] ... ]  # 順序=本地升序
+        "kept_global_bits_per_lut": [ [gbits...] ... ]  # LUT global bits
         "addr_bits_per_lut": [m_l ...],
         "num_classes": C,
         "alpha": float(model.alpha or 1.0),

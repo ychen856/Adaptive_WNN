@@ -9,7 +9,6 @@ from typing import Dict, List, Tuple
 import numpy as np
 from os.path import join
 
-from src.core.infer import build_runtime_profile
 from src.dataio.encode import encode_batch_thermo_plus_sobel
 
 from datasets.LoadDatasets import MnistDataloader
@@ -47,72 +46,6 @@ def eval_with_profile(profile: Dict, X_bits: np.ndarray, y: np.ndarray) -> float
             correct += 1
     return correct / X_bits.shape[0]
 
-
-# ---------------------------
-# Grid evaluation (bits_keep × luts_keep)
-# ---------------------------
-def eval_grid_bits_luts(model,
-                        tuple_mapping: List[List[int]],
-                        bit_priority: np.ndarray,
-                        lut_priority: np.ndarray,
-                        X_bits: np.ndarray,
-                        y: np.ndarray,
-                        bits_keep_list: List[float],
-                        luts_keep_list: List[float],
-                        *,
-                        align_strategy: str = "min") -> Dict[Tuple[float, float], float]:
-    """
-    return {(bits_keep, luts_keep): acc}
-    """
-    from collections import OrderedDict
-    results = OrderedDict()
-    all_bits = set(range(X_bits.shape[1]))
-
-    for bk in bits_keep_list:
-        # build global set
-        B = bit_priority.shape[0]
-        order_bits = np.argsort(-bit_priority)
-        kbits = max(1, int(round(B * bk)))
-        keep_bits_set = set(order_bits[:kbits])
-
-        # bit pruning sanity check：when bk==1.0, keep_bits_set == all_bits
-        if abs(bk - 1.0) < 1e-9:
-            keep_bits_set = all_bits
-
-        for lk in luts_keep_list:
-            profile = build_runtime_profile(
-                model=model,
-                tuple_mapping=tuple_mapping,
-                keep_bits_set=keep_bits_set,
-                lut_priority=lut_priority,
-                luts_keep_ratio=lk,
-                bit_priority=bit_priority,
-                align_strategy=align_strategy
-            )
-            acc = eval_with_profile(profile, X_bits, y)
-            results[(bk, lk)] = acc
-    return results
-
-
-# ---------------------------
-# Sanity: Full-full consistency check
-# ---------------------------
-def sanity_check_full_profile(model,
-                              tuple_mapping: List[List[int]],
-                              X_bits: np.ndarray,
-                              y: np.ndarray,
-                              lut_priority: np.ndarray) -> float:
-    all_bits = set(range(X_bits.shape[1]))
-    profile = build_runtime_profile(
-        model=model,
-        tuple_mapping=tuple_mapping,
-        keep_bits_set=all_bits,
-        lut_priority=lut_priority,
-        luts_keep_ratio=1.0,
-        align_strategy="min"  # target_m = n
-    )
-    acc = eval_with_profile(profile, X_bits, y)
-    return acc
 
 
 def predict_with_profile_varm(profile: Dict, bit_vec: np.ndarray, mode: str = "log_posterior") -> int:

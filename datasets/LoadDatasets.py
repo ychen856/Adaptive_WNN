@@ -53,8 +53,8 @@ class MnistDataloader(object):
     def load_data(self):
         #x_train, y_train = self.read_images_labels(self.training_images_filepath, self.training_labels_filepath)
         #x_test, y_test = self.read_images_labels(self.test_images_filepath, self.test_labels_filepath)
-        trainset = datasets.MNIST(root="D:/workspace/Adaptive_WNN/datasets/", train=True, download=True, transform=torchvision.transforms.ToTensor())
-        testset = datasets.MNIST(root="D:/workspace/Adaptive_WNN/datasets/", train=False, download=True, transform=torchvision.transforms.ToTensor())
+        trainset = datasets.MNIST(root="/Users/yi-chunchen/workspace/Adaptive_WNN/datasets/", train=True, download=True, transform=torchvision.transforms.ToTensor())
+        testset = datasets.MNIST(root="/Users/yi-chunchen/workspace/Adaptive_WNN/datasets/", train=False, download=True, transform=torchvision.transforms.ToTensor())
 
         return (trainset.data, trainset.targets), (testset.data, testset.targets)
 
