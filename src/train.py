@@ -211,6 +211,9 @@ if __name__ == "__main__":
     
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
+    model = train_model(model, train_loader, test_loader, device, num_epochs=30, base_lr=1e-3)
+    torch.save(model.state_dict(), "/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_unpruned.pth")
+
     # load pre-trained unpruned model  
     model.load_state_dict(torch.load("/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_unpruned.pth", map_location=device))
 

@@ -1,4 +1,10 @@
 ## python:
+initialization: <br/>
+Adaptive_WNN> python -m src.train <br/>
+evaluation: <br/>
+Adaptive_WNN> python -m importer <br/>
+
+
 Adaptive_WNN>python -m src.train <br/>
 export files Adaptive_WNN/src/exports/foldername
 
