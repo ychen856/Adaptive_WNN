@@ -11,6 +11,7 @@ class MultiLayerWNN(nn.Module):
         num_classes: int,
         lut_input_size: int = 6,
         hidden_luts=(2000, 1000),
+        mapping=None,
         tau: float = 1.0,
     ):
         super().__init__()
@@ -22,12 +23,16 @@ class MultiLayerWNN(nn.Module):
         self.layer_in_bits = []   # input bits per layer
         self.layer_out_luts = []  # number of LUTs per layer
 
-        for n_lut in hidden_luts:
+        for i, n_lut in enumerate(hidden_luts):
+            # Use mapping only for the first layer
+            layer_mapping = mapping if i == 0 else None
+
             layers.append(
                 WNNLUTLayer(
                     in_bits=prev_bits,
                     num_luts=n_lut,
                     lut_input_size=lut_input_size,
+                    mapping=layer_mapping # <--- PASS IT HERE
                 )
             )
             self.layer_in_bits.append(prev_bits)
@@ -40,21 +45,22 @@ class MultiLayerWNN(nn.Module):
         # for hidden pruning
         self.register_buffer("keep_idx", None)
 
-    def forward(self, x_bits: torch.Tensor) -> torch.Tensor:
-        """
-        x_bits: [B, in_bits]
-        """
+    def forward(self, x_bits, return_hidden: bool = False):
         h = x_bits
         for layer in self.layers:
-            h = layer(h)  # [B, num_luts_l]
-
+            h = layer(h)
+        
         if self.keep_idx is not None:
             h_used = h[:, self.keep_idx]
         else:
             h_used = h
 
         logits = self.classifier(h_used) / self.tau
-        return logits
+
+        if return_hidden:
+            return logits, h
+        else:
+            return logits
 
     def forward_with_all_hidden(self, x_bits: torch.Tensor):
         """
