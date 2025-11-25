@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER wnn_axi
+	OPTION supported_peripherals = (wnn_axi);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = wnn_axi;
+END DRIVER
