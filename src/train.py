@@ -5,16 +5,18 @@ import torch
 import torch.nn.functional as F
 from src.dataio.mapping import make_tuple_mapping, audit_mapping
 from src.prune import *
+from src.tools.fpga_tools.fpga_export_utils import export_lut_init_files
 from test import *
 from src.core.infer import *
 from src.core.multiLayerWNN import MultiLayerWNN
 from src.dataio.encode import minmax_normalize, thermometer_encode, dt_thermometer_encode, compute_dt_thresholds
+from src.tools.fpga_tools.export_fpga_bundle import export_multilayer_2layer_for_fpga, verify_multilayer_export
 from torchvision import transforms
 from torch.utils.data import TensorDataset, DataLoader
 
 # from core.decision import tune_decision  #  Step 2
 
-CANONICAL_MAPPING = Path("~/Users/yi-chunchen/workspace/Adaptive_WNN/models/meta/tuple_mapping.json")
+CANONICAL_MAPPING = Path("/Users/yi-chunchen/workspace/Adaptive_WNN/models/meta/tuple_mapping.json")
 
 def load_or_create_mapping(bit_len, tiles, num_luts, addr_bits, seed=42, save_path=CANONICAL_MAPPING):
     save_path.parent.mkdir(parents=True, exist_ok=True)
@@ -251,5 +253,39 @@ if __name__ == "__main__":
                 finetune_epochs=5,
             )
 
-            # export pruned model for FPGA
+            '''# export pruned model for FPGA
             export_wnn_for_fpga(model_pruned, f"/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_pruned_br{int(bit_rate*100)}_lr{int(lut_rate*100)}.npz", quant_bits=16)
+
+            export_lut_init_files(
+                f"/Users/yi-chunchen/workspace/Adaptive_WNN/model/wnn_pruned_br{int(bit_rate*100)}_lr{int(lut_rate*100)}.npz",
+                out_dir="/Users/yi-chunchen/workspace/Adaptive_WNN/model/fpga_luts",
+                fmt="mem",          # or "coe"
+                radix=16,
+                fixed_frac_bits=None,  # if using table_q, then no further quantize needed
+                prefer_quantized=False, # if using table_q, then no further quantize needed
+            )'''
+
+
+            # -----------------------------
+            # 2b) multi-layer FPGA export + verify
+            # -----------------------------
+            
+            # every budget combination is placed under a different sub folder
+            combo_dir = Path(f'/Users/yi-chunchen/workspace/Adaptive_WNN/model/fpga_multilayer/br{int(bit_rate*100)}_lr{int(lut_rate*100)}')
+            combo_dir.mkdir(parents=True, exist_ok=True)
+
+            # export two-layer LUT (layer0 bit fuse, layer1 class fuse)
+            export_multilayer_2layer_for_fpga(
+                model_pruned,
+                out_root=combo_dir,
+                addr_bits_list=None,   # auto infer from model
+            )
+
+            # verify: use test set bits/y to compare PyTorch vs pipeline simulated from .mem
+            verify_multilayer_export(
+                model_pruned,
+                export_root=combo_dir,
+                x_bits=x_test_bits,
+                y=y_test,
+                sample_limit=1000,
+            )
