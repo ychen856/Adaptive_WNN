@@ -436,10 +436,10 @@ def bucket_mapper_mnist_thermo(global_bit_id: int,
                                thermo_levels: int = 8,
                                tile_size: int = 7) -> str:
     """
-    以 28x28 + thermometer-8 假設建桶：
+    Using 28x28 + thermometer-8, assume bucket mapping:
       - pixel = bit // 8
       - level = bit % 8 → L(0-3)/H(4-7)
-      - 影像切成 (H/tile_size) x (W/tile_size) tiles
+      - image divided into (H/tile_size) x (W/tile_size) tiles
     """
     pixel = global_bit_id // thermo_levels
     level = global_bit_id % thermo_levels
@@ -448,7 +448,7 @@ def bucket_mapper_mnist_thermo(global_bit_id: int,
     tx = x // tile_size
     ty = y // tile_size
     lvl = "L" if level < (thermo_levels // 2) else "H"
-    return f"T{tx}{ty}_{lvl}"  # 4x4x2=32 桶
+    return f"T{tx}{ty}_{lvl}"  # 4x4x2=32 buckets
 
 
 def save_meta(meta: Dict[str, Any], path: str) -> None:

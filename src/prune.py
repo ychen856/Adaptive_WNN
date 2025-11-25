@@ -1399,7 +1399,7 @@ def prune_wnn_with_budget_global(
         f"({total_luts_after/total_luts_before*100:.2f}% of original LUT count)"
     )
 
-    # ⭐ Print "per-layer pruning rate allocation"
+    # Print "per-layer pruning rate allocation"
     print("Per-layer LUT pruning allocation (global view):")
     for l, (n_before, n_after) in layer_lut_alloc.items():
         keep_ratio  = n_after / n_before
