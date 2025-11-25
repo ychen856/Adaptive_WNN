@@ -1,0 +1,11 @@
+# Ignore the exporting files for FPGA LUTs
+*.mem
+*.coe
+*.npz
+
+# Ignore python models
+*.pth
+*.pt
+
+#ignore dataset files
+*.gz
