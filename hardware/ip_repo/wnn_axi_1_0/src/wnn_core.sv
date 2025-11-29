@@ -4,7 +4,7 @@ module wnn_core #(
     parameter int NUM_LUTS    = 500, 
     parameter int ADDR_BITS   = 6,
     parameter int N_CLASSES   = 10,
-    parameter int COUNT_BITS  = 12,
+    parameter int COUNT_BITS  = 8,
     parameter int INPUT_BITS  = 25088  
 )(
     input  logic                       clk,
@@ -13,7 +13,7 @@ module wnn_core #(
     output logic                       done,
 
     // RAM Write Interface
-    input  logic [9:0]                 ivec_addr, // 0 to 783
+    input  logic [9:0]                 ivec_addr,
     input  logic [31:0]                ivec_wdata,
     input  logic                       ivec_wen,
 
@@ -28,10 +28,8 @@ module wnn_core #(
     input  logic [N_CLASSES*COUNT_BITS-1:0] bram_dout_b
 );
 
-    // ----------------------------------------------------------------
     // Internal Input RAM (Distributed RAM / LUTRAM)
     // Stores 784 x 32-bit words = 25,088 bits
-    // ----------------------------------------------------------------
     (* ram_style = "distributed" *) logic [31:0] input_ram [0:783];
 
     // Synchronous Write
@@ -41,9 +39,7 @@ module wnn_core #(
         end
     end
 
-    // ----------------------------------------------------------------
     // Parameters & Logic
-    // ----------------------------------------------------------------
     localparam int LUT_IDX_BITS   = $clog2(NUM_LUTS);
     localparam int SCORE_BITS     = COUNT_BITS + LUT_IDX_BITS + 2;
     localparam int MAX_ADDR_BITS  = ADDR_BITS;
@@ -95,9 +91,7 @@ module wnn_core #(
         end
     endgenerate
 
-    // ----------------------------------------------------------------
     // FSM
-    // ----------------------------------------------------------------
     integer k;
 
     always_ff @(posedge clk) begin
@@ -157,13 +151,13 @@ module wnn_core #(
                 // Fetch bits one by one from RAM
                 S_BUILD_ADDR: begin
                     if (addr_build_idx < addr_bits_rom[lut_idx]) begin
-                        // 1. Get the global bit index
+                        // Get the global bit index
                         automatic logic [BIT_IDX_BITS-1:0] global_idx = cached_bit_sels[addr_build_idx];
-                        // 2. Calculate RAM Word Address (idx / 32) and Bit Offset (idx % 32)
+                        // Calculate RAM Word Address (idx / 32) and Bit Offset (idx % 32)
                         automatic logic [9:0]  word_addr = global_idx[14:5]; // global_idx / 32
                         automatic logic [4:0]  bit_pos   = global_idx[4:0];  // global_idx % 32
                         
-                        // 3. Read from RAM (Distributed RAM is instant read in same cycle logic)
+                        // Read from RAM (Distributed RAM is instant read in same cycle logic)
                         automatic logic target_bit = input_ram[word_addr][bit_pos];
 
                         // 4. Shift into accumulator
