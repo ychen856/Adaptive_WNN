@@ -63,14 +63,38 @@ Use the Vivado Tcl Shell to execute the build instructions.
 After the script completes, the project will open automatically.
 
 * In the **Sources** pane, locate and open the **Block Design** (`WNNAcceleratorBlk.bd`).
-* Verify that your custom IP (`wnn_axi_0`) is instantiated and that the design has resolved all addresses and connections without showing critical warnings (e.g., IP not found or disconnected pins).
+* Verify that the custom IP (`wnn_axi_0`) is instantiated and that the design has resolved all addresses and connections without showing critical warnings.
 
 ### 4. Generate the Bitstream
 
 Once verified, the design is ready for synthesis and implementation.
 
-1.  In the Vivado GUI, click **Generate Bitstream** (or run `launch_runs impl_1 -to_step write_bitstream` in the Tcl Console).
-2.  The resulting `.bit` file will be located in the implementation run directory (e.g., `vivado_project/WNNAccelerator.runs/impl_1/`).
+1.  In the Vivado GUI, click **Generate Bitstream**.
+2.  The resulting `.bit` file will be located in the implementation run directory (e.g., `vivado_project/WNNAccelerator.runs/impl_1/`). You will also need the .hwh file found under `vivado_project/WNNAccelerator.gen/sources_1/bd/WNNAcceleratorBlk/hw_handoff`.
 
+## Running on PYNQ
+
+### 1. Setup and File Transfer
+
+Upload the contents of the `pynq/` folder to your PYNQ board (e.g., via Jupyter interface or Samba). The directory includes:
+
+* `WNNAcceleratorBlk.bit` & `WNNAcceleratorBlk.hwh`: The pre-compiled hardware overlay.
+* `luts.zip`: The quantized Look-Up Tables generated during training.
+* `mnist_fpga_test_data.npz`: Compressed NumPy array containing the test dataset.
+* `inference.ipynb`: The Jupyter notebook for driving the accelerator.
+
+**Note:** The provided data and LUTs are generated using a fixed seed for reproducibility. If you train a new model using `train.py`, ensure you upload the newly generated `luts.zip` and test data to the board. Also, if you modified and re-synthesized the hardware in Vivado, replace the `.bit` and `.hwh` files with your build artifacts.
+
+### 2. Execution
+
+1.  Open `inference.ipynb` in the PYNQ Jupyter interface.
+2.  Execute the cell to load the overlay, program the LUTs into BRAM, and stream the test data.
+
+### 3. Performance
+
+Upon successful execution, the notebook will output classification accuracy and throughput. Reference performance metrics are:
+
+* **Accuracy:** ~95.64%
+* **Throughput:** ~1538 FPS
 
 
