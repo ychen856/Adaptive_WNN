@@ -32,4 +32,45 @@ Memory initialization files for FPGA BRAMs. Each .coe lists rows for addresses 0
 You may choose a different packing (e.g., one BRAM per class vs one wide BRAM containing all C). The provided .coe is a neutral, human-legible format—feel free to adapt packing to your synthesis flow.
 Need to be converted to the .mem files for FPGA usage.
 
+## Recreating Project in Vivado
+Note this project is configured for the Arty Z7-20 on Vivado 2025.2.
+
+### 1. Prerequisites and Setup
+
+Ensure you have the following directory structure, as the build script relies on relative paths to locate resources:
+
+* The local repository folder (e.g., `Adaptive_WNN-2.0/`)
+    * `hardware/`
+        * `ip_repo/` (Contains custom IP source files)
+        * `scripts/` (Contains `build.tcl`)
+
+### 2. Create the Vivado Project
+
+Use the Vivado Tcl Shell to execute the build instructions.
+
+1.  Open the **Vivado Tcl Shell** or the **Tcl Console** inside the Vivado GUI.
+2.  Navigate to the `scripts` directory within your local repository clone:
+    ```bash
+    cd <path/to/your/repo>/hardware/scripts
+    ```
+3.  Source the build script. This command will execute all instructions, set the **IP Repository paths**, and generate the entire Vivado project structure inside a sub-directory called `vivado_project`.
+    ```tcl
+    source build.tcl
+    ```
+
+### 3. Verify the Block Design
+
+After the script completes, the project will open automatically.
+
+* In the **Sources** pane, locate and open the **Block Design** (`WNNAcceleratorBlk.bd`).
+* Verify that your custom IP (`wnn_axi_0`) is instantiated and that the design has resolved all addresses and connections without showing critical warnings (e.g., IP not found or disconnected pins).
+
+### 4. Generate the Bitstream
+
+Once verified, the design is ready for synthesis and implementation.
+
+1.  In the Vivado GUI, click **Generate Bitstream** (or run `launch_runs impl_1 -to_step write_bitstream` in the Tcl Console).
+2.  The resulting `.bit` file will be located in the implementation run directory (e.g., `vivado_project/WNNAccelerator.runs/impl_1/`).
+
+
 
