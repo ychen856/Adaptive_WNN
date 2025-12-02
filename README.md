@@ -76,25 +76,31 @@ Once verified, the design is ready for synthesis and implementation.
 
 ### 1. Setup and File Transfer
 
-Upload the contents of the `pynq/` folder to your PYNQ board (e.g., via Jupyter interface or Samba). The directory includes:
+Upload the contents of the `pynq/` folder to your PYNQ board (e.g., via Jupyter interface or Samba). The directory must include:
 
 * `WNNAcceleratorBlk.bit` & `WNNAcceleratorBlk.hwh`: The pre-compiled hardware overlay.
-* `luts.zip`: The quantized Look-Up Tables generated during training.
+* `luts/`: A directory containing the quantized Look-Up Tables (`.mem` files) generated during training.
 * `mnist_fpga_test_data.npz`: Compressed NumPy array containing the test dataset.
-* `inference.ipynb`: The Jupyter notebook for driving the accelerator.
+* `wnn_runner.cpp`: The C++ source code for the high-performance inference driver.
+* `inference.ipynb`: The Jupyter notebook containing the hybrid Python/C++ control script.
 
-**Note:** The provided data and LUTs are generated using a fixed seed for reproducibility. If you train a new model using `train.py`, ensure you upload the newly generated `luts.zip` and test data to the board. Also, if you modified and re-synthesized the hardware in Vivado, replace the `.bit` and `.hwh` files with your build artifacts.
+**Note:** The provided data and LUTs are generated using a fixed seed for reproducibility. If you train a new model, ensure you upload the newly generated `luts` folder and test data to the board.
 
 ### 2. Execution
 
 1.  Open `inference.ipynb` in the PYNQ Jupyter interface.
-2.  Execute the cell to load the overlay, program the LUTs into BRAM, and stream the test data.
+2.  Execute the cells. The script will automatically:
+    * Program the FPGA bitstream.
+    * Load weights into the FPGA BRAM.
+    * **Compile the C++ driver** (`wnn_runner.cpp`) using `g++`.
+    * Pack the test data into contiguous memory (CMA).
+    * Hand off execution to the C++ executable for maximum speed.
 
 ### 3. Performance
 
-Upon successful execution, the notebook will output classification accuracy and throughput. Reference performance metrics are:
+Upon successful execution, the notebook will report classification accuracy and hardware throughput. Current benchmark metrics on Arty Z7-20:
 
 * **Accuracy:** ~95.64%
-* **Throughput:** ~1538 FPS
-
-
+* **Throughput:** ~15,226 FPS
+* **Latency:** ~66 µs per image
+* **Power (PL Dynamic):** ~155 mW
