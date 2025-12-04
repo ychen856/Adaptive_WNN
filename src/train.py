@@ -227,8 +227,8 @@ if __name__ == "__main__":
     
 
     # bit / lut pruning with different budgets
-    for bit_rate in [1.0, 0.9, 0.8, 0.7, 0.6]:
-        for lut_rate in [1.0, 0.9, 0.8, 0.7, 0.6]:
+    for bit_rate in [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]:
+        for lut_rate in [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]:
             print('bit rate: ', bit_rate)
             print('lut_rate: ', lut_rate)
             C = 10
@@ -250,7 +250,7 @@ if __name__ == "__main__":
                 bit_keep_global=bit_rate,
                 lut_keep_global=lut_rate,
                 k_min=3,
-                finetune_epochs=5,
+                finetune_epochs=20,
             )
 
             '''# export pruned model for FPGA
