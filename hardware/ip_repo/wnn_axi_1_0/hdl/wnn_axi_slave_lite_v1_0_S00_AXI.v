@@ -7,12 +7,11 @@ module wnn_axi_slave_lite_v1_0_S00_AXI #
     parameter integer C_S_AXI_ADDR_WIDTH = 14
 )
 (
-    output wire [ADDR_BW-1:0]           bram_addr_b,
-    output wire                         bram_en_b,
-    output wire [15:0]                  bram_we_b,   
-    output wire [127:0]                 bram_din_b,  
-    input  wire [127:0]                 bram_dout_b,
+    output wire                         core_start_pulse,
+    input  wire                         core_done_in,
+    input  wire [3:0]                   core_pred_class_in,
 
+    // Standard AXI Ports
     input wire                          S_AXI_ACLK,
     input wire                          S_AXI_ARESETN,
     input wire [C_S_AXI_ADDR_WIDTH-1:0] S_AXI_AWADDR,
@@ -31,11 +30,10 @@ module wnn_axi_slave_lite_v1_0_S00_AXI #
     input wire                          S_AXI_ARVALID,
     output wire                         S_AXI_ARREADY,
     output wire [C_S_AXI_DATA_WIDTH-1:0] S_AXI_RDATA,
-    output wire [1:0]                   S_AXI_RRESP,
-    output wire                         S_AXI_RVALID,
-    input  wire                         S_AXI_RREADY
+    output wire [1:0]                    S_AXI_RRESP,
+    output wire                          S_AXI_RVALID,
+    input  wire                          S_AXI_RREADY
 );
-    // AXI4-Lite signals
     reg [C_S_AXI_ADDR_WIDTH-1:0] axi_awaddr;
     reg                          axi_awready;
     reg                          axi_wready;
@@ -67,35 +65,12 @@ module wnn_axi_slave_lite_v1_0_S00_AXI #
 
     wire [1:0] wr_addr_sel = S_AXI_AWADDR[3:2];
 
-    // -----------------------------------------
-    // Write Logic (Direct to Core RAM)
-    // -----------------------------------------
-    // Define signals to pass to Core
-    reg [9:0]  core_ivec_addr;
-    reg [31:0] core_ivec_wdata;
-    reg        core_ivec_wen;
-
+    // Write Logic
     always @(posedge S_AXI_ACLK) begin
-        // Defaults 
-        core_ivec_wen <= 1'b0; 
-        core_ivec_addr <= 10'd0;
-        core_ivec_wdata <= 32'd0;
-
         if (S_AXI_ARESETN && slv_reg_wren) begin
             case (S_AXI_AWADDR[C_S_AXI_ADDR_WIDTH-1:2])
-                12'h000: ; // CTRL
-                12'h001: ; // Output
-                12'h003: slv_reg3 <= S_AXI_WDATA; // Config
-                default: begin
-                    // Input Vector Range: 0x40 (16) to 800
-                    if (S_AXI_AWADDR[C_S_AXI_ADDR_WIDTH-1:2] >= 12'd16 && 
-                        S_AXI_AWADDR[C_S_AXI_ADDR_WIDTH-1:2] < 12'd800) begin
-                         // Pass write to Core RAM
-                         core_ivec_addr  <= S_AXI_AWADDR[C_S_AXI_ADDR_WIDTH-1:2] - 12'd16;
-                         core_ivec_wdata <= S_AXI_WDATA;
-                         core_ivec_wen   <= 1'b1; 
-                    end
-                end
+                12'h003: slv_reg3 <= S_AXI_WDATA;
+                default: ; 
             endcase
         end
     end
@@ -152,49 +127,15 @@ module wnn_axi_slave_lite_v1_0_S00_AXI #
     wire wr_ctrl         = slv_reg_wren && (wr_addr_sel == 2'h0) && S_AXI_WSTRB[0];
     wire start_req       = wr_ctrl && S_AXI_WDATA[0]; 
     wire clear_done_req  = wr_ctrl && S_AXI_WDATA[2];
+
     reg  start_pulse;
     always @(posedge S_AXI_ACLK) begin
         if (!S_AXI_ARESETN) start_pulse <= 1'b0;
         else start_pulse <= start_req;
     end
-
-    // Instantiate WNN core
-    wire                       core_done;
-    wire [$clog2(10)-1:0]      core_pred_class;
-    wire                       core_bram_en;
-    wire [ADDR_BW-1:0]         core_bram_addr;
-    wire [127:0]               core_bram_dout;
     
-    assign bram_en_b      = core_bram_en;
-    assign bram_addr_b    = core_bram_addr;
-    assign bram_we_b      = 16'h0000;
-    assign bram_din_b     = 128'h0;
-    assign core_bram_dout = bram_dout_b;
-
-    wnn_core #(
-        .NUM_LUTS    (500),
-        .ADDR_BITS   (6),
-        .N_CLASSES   (10),
-        .COUNT_BITS  (12),
-        .INPUT_BITS  (25088) 
-    ) u_wnn_core (
-        .clk        (S_AXI_ACLK),
-        .rst_n      (S_AXI_ARESETN), 
-        .start      (start_pulse),
-        .done       (core_done),
-        
-        // NEW: Passing write signals to core
-        .ivec_addr  (core_ivec_addr),
-        .ivec_wdata (core_ivec_wdata),
-        .ivec_wen   (core_ivec_wen),
-        
-        .enable_mask      ({500{1'b1}}),
-        .addr_mask        ({6{1'b1}}),
-        .predicted_class  (core_pred_class),
-        .bram_addr_b      (core_bram_addr),
-        .bram_en_b        (core_bram_en),
-        .bram_dout_b      (core_bram_dout)
-    );
+    // OUTPUT: Send start pulse to the external core
+    assign core_start_pulse = start_pulse;
 
     // Status Logic
     always @(posedge S_AXI_ACLK) begin
@@ -203,9 +144,11 @@ module wnn_axi_slave_lite_v1_0_S00_AXI #
             slv_reg1    <= 32'h0;
         end else begin
             if (clear_done_req) done_status <= 1'b0;
-            if (core_done) begin
+            
+            // INPUT: Read done/result from external core
+            if (core_done_in) begin
                 done_status <= 1'b1;
-                slv_reg1    <= {28'd0, core_pred_class};
+                slv_reg1    <= {28'd0, core_pred_class_in};
             end
         end
     end
