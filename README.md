@@ -9,8 +9,6 @@ Adaptive_WNN> python -m src.train_2 <br/>
 Modify keep_ratio to change the pruning rate <br/>
 keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.5, min_keep=64)
 
-Adaptive_WNN>python -m src.train <br/>
-export files Adaptive_WNN/src/exports/foldername
 
 ## FPGA usage:
 ### addr_bits_per_lut.json 
