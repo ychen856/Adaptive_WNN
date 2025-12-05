@@ -1,0 +1,1009 @@
+bit rate:  0.8
+lut_rate:  0.4
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 5
+  Layer 1: k 6 -> 5
+Layer 0: k_old=6 -> k_new=5, table shape: (num_luts=2000, 2^6) -> 2^5
+Layer 1: k_old=6 -> k_new=5, table shape: (num_luts=1000, 2^6) -> 2^5
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.4...
+  Total LUTs: 3000 -> 1200 (40.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->770, keep=38.50%, prune=61.50%, share_after=64.17% of remaining LUTs
+  Layer 1: LUTs 1000->430, keep=43.00%, prune=57.00%, share_after=35.83% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=72.86%, val_acc=73.65%
+[Finetune 1] train_acc=83.34%, val_acc=83.72%
+[Finetune 2] train_acc=86.20%, val_acc=86.53%
+[Finetune 3] train_acc=86.72%, val_acc=86.90%
+[Finetune 4] train_acc=88.79%, val_acc=88.86%
+[After finetuning] train_acc=88.79%, val_acc=88.86%, total_LUT_entries=38400, compression=20.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->770, k 6->5, entries 128000->24640
+  Layer 1: LUTs 1000->430, k 6->5, entries 64000->13760
+bit rate:  0.8
+lut_rate:  0.3
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 5
+  Layer 1: k 6 -> 5
+Layer 0: k_old=6 -> k_new=5, table shape: (num_luts=2000, 2^6) -> 2^5
+Layer 1: k_old=6 -> k_new=5, table shape: (num_luts=1000, 2^6) -> 2^5
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.3...
+  Total LUTs: 3000 -> 900 (30.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->477, keep=23.85%, prune=76.15%, share_after=53.00% of remaining LUTs
+  Layer 1: LUTs 1000->423, keep=42.30%, prune=57.70%, share_after=47.00% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=54.07%, val_acc=55.75%
+[Finetune 1] train_acc=73.89%, val_acc=74.41%
+[Finetune 2] train_acc=80.52%, val_acc=80.81%
+[Finetune 3] train_acc=82.87%, val_acc=83.13%
+[Finetune 4] train_acc=84.11%, val_acc=84.37%
+[After finetuning] train_acc=84.11%, val_acc=84.37%, total_LUT_entries=28800, compression=15.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->477, k 6->5, entries 128000->15264
+  Layer 1: LUTs 1000->423, k 6->5, entries 64000->13536
+bit rate:  0.7
+lut_rate:  1.0
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=1.0...
+  Total LUTs: 3000 -> 3000 (100.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=66.67% of remaining LUTs
+  Layer 1: LUTs 1000->1000, keep=100.00%, prune=0.00%, share_after=33.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=85.49%, val_acc=85.89%
+[Finetune 1] train_acc=90.19%, val_acc=90.34%
+[Finetune 2] train_acc=91.95%, val_acc=91.45%
+[Finetune 3] train_acc=91.52%, val_acc=91.15%
+[Finetune 4] train_acc=93.02%, val_acc=92.75%
+[After finetuning] train_acc=93.02%, val_acc=92.75%, total_LUT_entries=48000, compression=25.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->4, entries 128000->32000
+  Layer 1: LUTs 1000->1000, k 6->4, entries 64000->16000
+bit rate:  0.7
+lut_rate:  0.9
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.9...
+  Total LUTs: 3000 -> 2700 (90.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=74.07% of remaining LUTs
+  Layer 1: LUTs 1000->700, keep=70.00%, prune=30.00%, share_after=25.93% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=83.91%, val_acc=84.74%
+[Finetune 1] train_acc=89.29%, val_acc=89.61%
+[Finetune 2] train_acc=90.83%, val_acc=90.56%
+[Finetune 3] train_acc=91.64%, val_acc=91.78%
+[Finetune 4] train_acc=91.72%, val_acc=91.11%
+[After finetuning] train_acc=91.72%, val_acc=91.11%, total_LUT_entries=43200, compression=22.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->4, entries 128000->32000
+  Layer 1: LUTs 1000->700, k 6->4, entries 64000->11200
+bit rate:  0.7
+lut_rate:  0.8
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.8...
+  Total LUTs: 3000 -> 2400 (80.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1935, keep=96.75%, prune=3.25%, share_after=80.62% of remaining LUTs
+  Layer 1: LUTs 1000->465, keep=46.50%, prune=53.50%, share_after=19.38% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=81.54%, val_acc=82.02%
+[Finetune 1] train_acc=86.52%, val_acc=86.89%
+[Finetune 2] train_acc=89.37%, val_acc=89.35%
+[Finetune 3] train_acc=91.15%, val_acc=91.09%
+[Finetune 4] train_acc=91.48%, val_acc=91.21%
+[After finetuning] train_acc=91.48%, val_acc=91.21%, total_LUT_entries=38400, compression=20.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1935, k 6->4, entries 128000->30960
+  Layer 1: LUTs 1000->465, k 6->4, entries 64000->7440
+bit rate:  0.7
+lut_rate:  0.7
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.7...
+  Total LUTs: 3000 -> 2100 (70.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1647, keep=82.35%, prune=17.65%, share_after=78.43% of remaining LUTs
+  Layer 1: LUTs 1000->453, keep=45.30%, prune=54.70%, share_after=21.57% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=81.46%, val_acc=82.14%
+[Finetune 1] train_acc=87.47%, val_acc=87.67%
+[Finetune 2] train_acc=88.82%, val_acc=89.00%
+[Finetune 3] train_acc=90.29%, val_acc=90.05%
+[Finetune 4] train_acc=90.88%, val_acc=90.80%
+[After finetuning] train_acc=90.88%, val_acc=90.80%, total_LUT_entries=33600, compression=17.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1647, k 6->4, entries 128000->26352
+  Layer 1: LUTs 1000->453, k 6->4, entries 64000->7248
+bit rate:  0.7
+lut_rate:  0.6
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.6...
+  Total LUTs: 3000 -> 1800 (60.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1351, keep=67.55%, prune=32.45%, share_after=75.06% of remaining LUTs
+  Layer 1: LUTs 1000->449, keep=44.90%, prune=55.10%, share_after=24.94% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=78.44%, val_acc=79.28%
+[Finetune 1] train_acc=86.03%, val_acc=86.49%
+[Finetune 2] train_acc=87.86%, val_acc=88.20%
+[Finetune 3] train_acc=89.27%, val_acc=89.41%
+[Finetune 4] train_acc=90.52%, val_acc=90.66%
+[After finetuning] train_acc=90.52%, val_acc=90.66%, total_LUT_entries=28800, compression=15.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1351, k 6->4, entries 128000->21616
+  Layer 1: LUTs 1000->449, k 6->4, entries 64000->7184
+bit rate:  0.7
+lut_rate:  0.5
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.5...
+  Total LUTs: 3000 -> 1500 (50.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1055, keep=52.75%, prune=47.25%, share_after=70.33% of remaining LUTs
+  Layer 1: LUTs 1000->445, keep=44.50%, prune=55.50%, share_after=29.67% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=73.33%, val_acc=74.36%
+[Finetune 1] train_acc=83.79%, val_acc=84.24%
+[Finetune 2] train_acc=86.14%, val_acc=86.60%
+[Finetune 3] train_acc=87.46%, val_acc=88.10%
+[Finetune 4] train_acc=88.01%, val_acc=88.45%
+[After finetuning] train_acc=88.01%, val_acc=88.45%, total_LUT_entries=24000, compression=12.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1055, k 6->4, entries 128000->16880
+  Layer 1: LUTs 1000->445, k 6->4, entries 64000->7120
+bit rate:  0.7
+lut_rate:  0.4
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.4...
+  Total LUTs: 3000 -> 1200 (40.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->757, keep=37.85%, prune=62.15%, share_after=63.08% of remaining LUTs
+  Layer 1: LUTs 1000->443, keep=44.30%, prune=55.70%, share_after=36.92% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=63.25%, val_acc=63.69%
+[Finetune 1] train_acc=78.09%, val_acc=78.77%
+[Finetune 2] train_acc=81.75%, val_acc=82.43%
+[Finetune 3] train_acc=83.59%, val_acc=83.91%
+[Finetune 4] train_acc=85.89%, val_acc=86.50%
+[After finetuning] train_acc=85.89%, val_acc=86.50%, total_LUT_entries=19200, compression=10.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->757, k 6->4, entries 128000->12112
+  Layer 1: LUTs 1000->443, k 6->4, entries 64000->7088
+bit rate:  0.7
+lut_rate:  0.3
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.3...
+  Total LUTs: 3000 -> 900 (30.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->463, keep=23.15%, prune=76.85%, share_after=51.44% of remaining LUTs
+  Layer 1: LUTs 1000->437, keep=43.70%, prune=56.30%, share_after=48.56% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=47.18%, val_acc=47.57%
+[Finetune 1] train_acc=67.71%, val_acc=68.75%
+[Finetune 2] train_acc=73.02%, val_acc=73.58%
+[Finetune 3] train_acc=77.44%, val_acc=78.19%
+[Finetune 4] train_acc=78.98%, val_acc=79.52%
+[After finetuning] train_acc=78.98%, val_acc=79.52%, total_LUT_entries=14400, compression=7.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->463, k 6->4, entries 128000->7408
+  Layer 1: LUTs 1000->437, k 6->4, entries 64000->6992
+bit rate:  0.6
+lut_rate:  1.0
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=1.0...
+  Total LUTs: 3000 -> 3000 (100.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=66.67% of remaining LUTs
+  Layer 1: LUTs 1000->1000, keep=100.00%, prune=0.00%, share_after=33.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=86.23%, val_acc=87.06%
+[Finetune 1] train_acc=88.48%, val_acc=88.85%
+[Finetune 2] train_acc=90.77%, val_acc=90.63%
+[Finetune 3] train_acc=93.25%, val_acc=92.91%
+[Finetune 4] train_acc=93.69%, val_acc=93.40%
+[After finetuning] train_acc=93.69%, val_acc=93.40%, total_LUT_entries=48000, compression=25.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->4, entries 128000->32000
+  Layer 1: LUTs 1000->1000, k 6->4, entries 64000->16000
+bit rate:  0.6
+lut_rate:  0.9
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.9...
+  Total LUTs: 3000 -> 2700 (90.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=74.07% of remaining LUTs
+  Layer 1: LUTs 1000->700, keep=70.00%, prune=30.00%, share_after=25.93% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=84.71%, val_acc=85.36%
+[Finetune 1] train_acc=88.29%, val_acc=88.34%
+[Finetune 2] train_acc=91.22%, val_acc=91.06%
+[Finetune 3] train_acc=90.41%, val_acc=90.24%
+[Finetune 4] train_acc=92.74%, val_acc=92.22%
+[After finetuning] train_acc=92.74%, val_acc=92.22%, total_LUT_entries=43200, compression=22.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->4, entries 128000->32000
+  Layer 1: LUTs 1000->700, k 6->4, entries 64000->11200
+bit rate:  0.6
+lut_rate:  0.8
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.8...
+  Total LUTs: 3000 -> 2400 (80.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1935, keep=96.75%, prune=3.25%, share_after=80.62% of remaining LUTs
+  Layer 1: LUTs 1000->465, keep=46.50%, prune=53.50%, share_after=19.38% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=83.09%, val_acc=83.94%
+[Finetune 1] train_acc=87.03%, val_acc=87.33%
+[Finetune 2] train_acc=88.50%, val_acc=88.63%
+[Finetune 3] train_acc=90.30%, val_acc=90.31%
+[Finetune 4] train_acc=91.72%, val_acc=91.39%
+[After finetuning] train_acc=91.72%, val_acc=91.39%, total_LUT_entries=38400, compression=20.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1935, k 6->4, entries 128000->30960
+  Layer 1: LUTs 1000->465, k 6->4, entries 64000->7440
+bit rate:  0.6
+lut_rate:  0.7
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.7...
+  Total LUTs: 3000 -> 2100 (70.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1647, keep=82.35%, prune=17.65%, share_after=78.43% of remaining LUTs
+  Layer 1: LUTs 1000->453, keep=45.30%, prune=54.70%, share_after=21.57% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=76.70%, val_acc=77.69%
+[Finetune 1] train_acc=86.88%, val_acc=87.18%
+[Finetune 2] train_acc=89.07%, val_acc=88.74%
+[Finetune 3] train_acc=90.08%, val_acc=89.71%
+[Finetune 4] train_acc=91.00%, val_acc=90.61%
+[After finetuning] train_acc=91.00%, val_acc=90.61%, total_LUT_entries=33600, compression=17.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1647, k 6->4, entries 128000->26352
+  Layer 1: LUTs 1000->453, k 6->4, entries 64000->7248
+bit rate:  0.6
+lut_rate:  0.6
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.6...
+  Total LUTs: 3000 -> 1800 (60.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1351, keep=67.55%, prune=32.45%, share_after=75.06% of remaining LUTs
+  Layer 1: LUTs 1000->449, keep=44.90%, prune=55.10%, share_after=24.94% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=76.88%, val_acc=78.44%
+[Finetune 1] train_acc=85.44%, val_acc=85.66%
+[Finetune 2] train_acc=88.00%, val_acc=88.07%
+[Finetune 3] train_acc=89.58%, val_acc=89.33%
+[Finetune 4] train_acc=90.33%, val_acc=89.92%
+[After finetuning] train_acc=90.33%, val_acc=89.92%, total_LUT_entries=28800, compression=15.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1351, k 6->4, entries 128000->21616
+  Layer 1: LUTs 1000->449, k 6->4, entries 64000->7184
+bit rate:  0.6
+lut_rate:  0.5
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.5...
+  Total LUTs: 3000 -> 1500 (50.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1055, keep=52.75%, prune=47.25%, share_after=70.33% of remaining LUTs
+  Layer 1: LUTs 1000->445, keep=44.50%, prune=55.50%, share_after=29.67% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=75.09%, val_acc=75.50%
+[Finetune 1] train_acc=83.23%, val_acc=83.79%
+[Finetune 2] train_acc=86.06%, val_acc=86.35%
+[Finetune 3] train_acc=87.73%, val_acc=87.61%
+[Finetune 4] train_acc=89.17%, val_acc=89.24%
+[After finetuning] train_acc=89.17%, val_acc=89.24%, total_LUT_entries=24000, compression=12.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1055, k 6->4, entries 128000->16880
+  Layer 1: LUTs 1000->445, k 6->4, entries 64000->7120
+bit rate:  0.6
+lut_rate:  0.4
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.4...
+  Total LUTs: 3000 -> 1200 (40.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->757, keep=37.85%, prune=62.15%, share_after=63.08% of remaining LUTs
+  Layer 1: LUTs 1000->443, keep=44.30%, prune=55.70%, share_after=36.92% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=65.14%, val_acc=66.42%
+[Finetune 1] train_acc=78.18%, val_acc=79.02%
+[Finetune 2] train_acc=82.43%, val_acc=83.29%
+[Finetune 3] train_acc=84.55%, val_acc=85.25%
+[Finetune 4] train_acc=85.58%, val_acc=86.15%
+[After finetuning] train_acc=85.58%, val_acc=86.15%, total_LUT_entries=19200, compression=10.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->757, k 6->4, entries 128000->12112
+  Layer 1: LUTs 1000->443, k 6->4, entries 64000->7088
+bit rate:  0.6
+lut_rate:  0.3
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 4
+  Layer 1: k 6 -> 4
+Layer 0: k_old=6 -> k_new=4, table shape: (num_luts=2000, 2^6) -> 2^4
+Layer 1: k_old=6 -> k_new=4, table shape: (num_luts=1000, 2^6) -> 2^4
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.3...
+  Total LUTs: 3000 -> 900 (30.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->463, keep=23.15%, prune=76.85%, share_after=51.44% of remaining LUTs
+  Layer 1: LUTs 1000->437, keep=43.70%, prune=56.30%, share_after=48.56% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=51.30%, val_acc=51.18%
+[Finetune 1] train_acc=67.95%, val_acc=68.16%
+[Finetune 2] train_acc=75.38%, val_acc=76.49%
+[Finetune 3] train_acc=78.87%, val_acc=79.47%
+[Finetune 4] train_acc=80.04%, val_acc=80.16%
+[After finetuning] train_acc=80.04%, val_acc=80.16%, total_LUT_entries=14400, compression=7.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->463, k 6->4, entries 128000->7408
+  Layer 1: LUTs 1000->437, k 6->4, entries 64000->6992
+bit rate:  0.5
+lut_rate:  1.0
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=1.0...
+  Total LUTs: 3000 -> 3000 (100.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=66.67% of remaining LUTs
+  Layer 1: LUTs 1000->1000, keep=100.00%, prune=0.00%, share_after=33.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=83.64%, val_acc=84.24%
+[Finetune 1] train_acc=86.12%, val_acc=86.58%
+[Finetune 2] train_acc=87.91%, val_acc=88.12%
+[Finetune 3] train_acc=90.50%, val_acc=90.69%
+[Finetune 4] train_acc=90.31%, val_acc=90.33%
+[After finetuning] train_acc=90.31%, val_acc=90.33%, total_LUT_entries=24000, compression=12.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->3, entries 128000->16000
+  Layer 1: LUTs 1000->1000, k 6->3, entries 64000->8000
+bit rate:  0.5
+lut_rate:  0.9
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.9...
+  Total LUTs: 3000 -> 2700 (90.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=74.07% of remaining LUTs
+  Layer 1: LUTs 1000->700, keep=70.00%, prune=30.00%, share_after=25.93% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=80.74%, val_acc=81.28%
+[Finetune 1] train_acc=85.34%, val_acc=85.70%
+[Finetune 2] train_acc=87.95%, val_acc=87.96%
+[Finetune 3] train_acc=89.59%, val_acc=89.78%
+[Finetune 4] train_acc=89.52%, val_acc=89.76%
+[After finetuning] train_acc=89.52%, val_acc=89.76%, total_LUT_entries=21600, compression=11.25% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->3, entries 128000->16000
+  Layer 1: LUTs 1000->700, k 6->3, entries 64000->5600
+bit rate:  0.5
+lut_rate:  0.8
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.8...
+  Total LUTs: 3000 -> 2400 (80.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1925, keep=96.25%, prune=3.75%, share_after=80.21% of remaining LUTs
+  Layer 1: LUTs 1000->475, keep=47.50%, prune=52.50%, share_after=19.79% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=72.06%, val_acc=72.28%
+[Finetune 1] train_acc=85.18%, val_acc=85.88%
+[Finetune 2] train_acc=87.01%, val_acc=87.41%
+[Finetune 3] train_acc=88.44%, val_acc=88.81%
+[Finetune 4] train_acc=90.09%, val_acc=90.13%
+[After finetuning] train_acc=90.09%, val_acc=90.13%, total_LUT_entries=19200, compression=10.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1925, k 6->3, entries 128000->15400
+  Layer 1: LUTs 1000->475, k 6->3, entries 64000->3800
+bit rate:  0.5
+lut_rate:  0.7
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.7...
+  Total LUTs: 3000 -> 2100 (70.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1635, keep=81.75%, prune=18.25%, share_after=77.86% of remaining LUTs
+  Layer 1: LUTs 1000->465, keep=46.50%, prune=53.50%, share_after=22.14% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=70.83%, val_acc=71.61%
+[Finetune 1] train_acc=82.24%, val_acc=83.00%
+[Finetune 2] train_acc=86.52%, val_acc=87.11%
+[Finetune 3] train_acc=87.88%, val_acc=88.15%
+[Finetune 4] train_acc=88.67%, val_acc=88.87%
+[After finetuning] train_acc=88.67%, val_acc=88.87%, total_LUT_entries=16800, compression=8.75% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1635, k 6->3, entries 128000->13080
+  Layer 1: LUTs 1000->465, k 6->3, entries 64000->3720
+bit rate:  0.5
+lut_rate:  0.6
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.6...
+  Total LUTs: 3000 -> 1800 (60.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1342, keep=67.10%, prune=32.90%, share_after=74.56% of remaining LUTs
+  Layer 1: LUTs 1000->458, keep=45.80%, prune=54.20%, share_after=25.44% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=71.49%, val_acc=72.67%
+[Finetune 1] train_acc=81.39%, val_acc=82.48%
+[Finetune 2] train_acc=85.39%, val_acc=86.00%
+[Finetune 3] train_acc=86.81%, val_acc=87.05%
+[Finetune 4] train_acc=87.38%, val_acc=87.82%
+[After finetuning] train_acc=87.38%, val_acc=87.82%, total_LUT_entries=14400, compression=7.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1342, k 6->3, entries 128000->10736
+  Layer 1: LUTs 1000->458, k 6->3, entries 64000->3664
+bit rate:  0.5
+lut_rate:  0.5
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.5...
+  Total LUTs: 3000 -> 1500 (50.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1045, keep=52.25%, prune=47.75%, share_after=69.67% of remaining LUTs
+  Layer 1: LUTs 1000->455, keep=45.50%, prune=54.50%, share_after=30.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=69.34%, val_acc=69.58%
+[Finetune 1] train_acc=80.73%, val_acc=81.17%
+[Finetune 2] train_acc=83.66%, val_acc=84.10%
+[Finetune 3] train_acc=86.00%, val_acc=86.07%
+[Finetune 4] train_acc=86.75%, val_acc=86.42%
+[After finetuning] train_acc=86.75%, val_acc=86.42%, total_LUT_entries=12000, compression=6.25% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1045, k 6->3, entries 128000->8360
+  Layer 1: LUTs 1000->455, k 6->3, entries 64000->3640
+bit rate:  0.5
+lut_rate:  0.4
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.4...
+  Total LUTs: 3000 -> 1200 (40.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->750, keep=37.50%, prune=62.50%, share_after=62.50% of remaining LUTs
+  Layer 1: LUTs 1000->450, keep=45.00%, prune=55.00%, share_after=37.50% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=53.89%, val_acc=54.49%
+[Finetune 1] train_acc=74.50%, val_acc=75.13%
+[Finetune 2] train_acc=79.66%, val_acc=79.87%
+[Finetune 3] train_acc=82.83%, val_acc=83.00%
+[Finetune 4] train_acc=84.33%, val_acc=84.37%
+[After finetuning] train_acc=84.33%, val_acc=84.37%, total_LUT_entries=9600, compression=5.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->750, k 6->3, entries 128000->6000
+  Layer 1: LUTs 1000->450, k 6->3, entries 64000->3600
+bit rate:  0.5
+lut_rate:  0.3
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.3...
+  Total LUTs: 3000 -> 900 (30.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->453, keep=22.65%, prune=77.35%, share_after=50.33% of remaining LUTs
+  Layer 1: LUTs 1000->447, keep=44.70%, prune=55.30%, share_after=49.67% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=38.59%, val_acc=39.74%
+[Finetune 1] train_acc=60.48%, val_acc=60.71%
+[Finetune 2] train_acc=69.72%, val_acc=69.40%
+[Finetune 3] train_acc=73.61%, val_acc=74.11%
+[Finetune 4] train_acc=75.65%, val_acc=75.99%
+[After finetuning] train_acc=75.65%, val_acc=75.99%, total_LUT_entries=7200, compression=3.75% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->453, k 6->3, entries 128000->3624
+  Layer 1: LUTs 1000->447, k 6->3, entries 64000->3576
+bit rate:  0.4
+lut_rate:  1.0
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=1.0...
+  Total LUTs: 3000 -> 3000 (100.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=66.67% of remaining LUTs
+  Layer 1: LUTs 1000->1000, keep=100.00%, prune=0.00%, share_after=33.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=80.81%, val_acc=82.26%
+[Finetune 1] train_acc=86.43%, val_acc=87.20%
+[Finetune 2] train_acc=88.72%, val_acc=88.97%
+[Finetune 3] train_acc=90.80%, val_acc=90.81%
+[Finetune 4] train_acc=90.58%, val_acc=90.81%
+[After finetuning] train_acc=90.58%, val_acc=90.81%, total_LUT_entries=24000, compression=12.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->3, entries 128000->16000
+  Layer 1: LUTs 1000->1000, k 6->3, entries 64000->8000
+bit rate:  0.4
+lut_rate:  0.9
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.9...
+  Total LUTs: 3000 -> 2700 (90.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=74.07% of remaining LUTs
+  Layer 1: LUTs 1000->700, keep=70.00%, prune=30.00%, share_after=25.93% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=78.34%, val_acc=79.60%
+[Finetune 1] train_acc=85.54%, val_acc=85.89%
+[Finetune 2] train_acc=87.28%, val_acc=87.43%
+[Finetune 3] train_acc=89.39%, val_acc=89.42%
+[Finetune 4] train_acc=90.53%, val_acc=90.52%
+[After finetuning] train_acc=90.53%, val_acc=90.52%, total_LUT_entries=21600, compression=11.25% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->3, entries 128000->16000
+  Layer 1: LUTs 1000->700, k 6->3, entries 64000->5600
+bit rate:  0.4
+lut_rate:  0.8
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.8...
+  Total LUTs: 3000 -> 2400 (80.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1925, keep=96.25%, prune=3.75%, share_after=80.21% of remaining LUTs
+  Layer 1: LUTs 1000->475, keep=47.50%, prune=52.50%, share_after=19.79% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=73.25%, val_acc=73.99%
+[Finetune 1] train_acc=82.88%, val_acc=83.38%
+[Finetune 2] train_acc=87.00%, val_acc=87.15%
+[Finetune 3] train_acc=88.61%, val_acc=88.74%
+[Finetune 4] train_acc=89.81%, val_acc=89.96%
+[After finetuning] train_acc=89.81%, val_acc=89.96%, total_LUT_entries=19200, compression=10.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1925, k 6->3, entries 128000->15400
+  Layer 1: LUTs 1000->475, k 6->3, entries 64000->3800
+bit rate:  0.4
+lut_rate:  0.7
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.7...
+  Total LUTs: 3000 -> 2100 (70.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1635, keep=81.75%, prune=18.25%, share_after=77.86% of remaining LUTs
+  Layer 1: LUTs 1000->465, keep=46.50%, prune=53.50%, share_after=22.14% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=75.08%, val_acc=76.00%
+[Finetune 1] train_acc=83.23%, val_acc=83.58%
+[Finetune 2] train_acc=86.60%, val_acc=87.09%
+[Finetune 3] train_acc=88.04%, val_acc=88.22%
+[Finetune 4] train_acc=88.94%, val_acc=89.37%
+[After finetuning] train_acc=88.94%, val_acc=89.37%, total_LUT_entries=16800, compression=8.75% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1635, k 6->3, entries 128000->13080
+  Layer 1: LUTs 1000->465, k 6->3, entries 64000->3720
+bit rate:  0.4
+lut_rate:  0.6
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.6...
+  Total LUTs: 3000 -> 1800 (60.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1342, keep=67.10%, prune=32.90%, share_after=74.56% of remaining LUTs
+  Layer 1: LUTs 1000->458, keep=45.80%, prune=54.20%, share_after=25.44% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=68.89%, val_acc=69.40%
+[Finetune 1] train_acc=83.57%, val_acc=83.95%
+[Finetune 2] train_acc=85.15%, val_acc=85.44%
+[Finetune 3] train_acc=87.69%, val_acc=87.79%
+[Finetune 4] train_acc=89.05%, val_acc=89.36%
+[After finetuning] train_acc=89.05%, val_acc=89.36%, total_LUT_entries=14400, compression=7.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1342, k 6->3, entries 128000->10736
+  Layer 1: LUTs 1000->458, k 6->3, entries 64000->3664
+bit rate:  0.4
+lut_rate:  0.5
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.5...
+  Total LUTs: 3000 -> 1500 (50.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1045, keep=52.25%, prune=47.75%, share_after=69.67% of remaining LUTs
+  Layer 1: LUTs 1000->455, keep=45.50%, prune=54.50%, share_after=30.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=67.72%, val_acc=68.52%
+[Finetune 1] train_acc=80.20%, val_acc=80.71%
+[Finetune 2] train_acc=84.10%, val_acc=84.28%
+[Finetune 3] train_acc=85.75%, val_acc=85.69%
+[Finetune 4] train_acc=86.28%, val_acc=86.36%
+[After finetuning] train_acc=86.28%, val_acc=86.36%, total_LUT_entries=12000, compression=6.25% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1045, k 6->3, entries 128000->8360
+  Layer 1: LUTs 1000->455, k 6->3, entries 64000->3640
+bit rate:  0.4
+lut_rate:  0.4
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.4...
+  Total LUTs: 3000 -> 1200 (40.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->750, keep=37.50%, prune=62.50%, share_after=62.50% of remaining LUTs
+  Layer 1: LUTs 1000->450, keep=45.00%, prune=55.00%, share_after=37.50% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=51.94%, val_acc=51.92%
+[Finetune 1] train_acc=70.90%, val_acc=71.20%
+[Finetune 2] train_acc=79.70%, val_acc=79.53%
+[Finetune 3] train_acc=83.42%, val_acc=83.48%
+[Finetune 4] train_acc=84.52%, val_acc=84.64%
+[After finetuning] train_acc=84.52%, val_acc=84.64%, total_LUT_entries=9600, compression=5.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->750, k 6->3, entries 128000->6000
+  Layer 1: LUTs 1000->450, k 6->3, entries 64000->3600
+bit rate:  0.4
+lut_rate:  0.3
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.3...
+  Total LUTs: 3000 -> 900 (30.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->453, keep=22.65%, prune=77.35%, share_after=50.33% of remaining LUTs
+  Layer 1: LUTs 1000->447, keep=44.70%, prune=55.30%, share_after=49.67% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=35.90%, val_acc=36.62%
+[Finetune 1] train_acc=57.81%, val_acc=58.34%
+[Finetune 2] train_acc=65.14%, val_acc=65.88%
+[Finetune 3] train_acc=72.48%, val_acc=72.92%
+[Finetune 4] train_acc=74.85%, val_acc=75.53%
+[After finetuning] train_acc=74.85%, val_acc=75.53%, total_LUT_entries=7200, compression=3.75% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->453, k 6->3, entries 128000->3624
+  Layer 1: LUTs 1000->447, k 6->3, entries 64000->3576
+bit rate:  0.3
+lut_rate:  1.0
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=1.0...
+  Total LUTs: 3000 -> 3000 (100.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=66.67% of remaining LUTs
+  Layer 1: LUTs 1000->1000, keep=100.00%, prune=0.00%, share_after=33.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=83.13%, val_acc=83.81%
+[Finetune 1] train_acc=87.44%, val_acc=87.98%
+[Finetune 2] train_acc=88.99%, val_acc=89.14%
+[Finetune 3] train_acc=89.93%, val_acc=90.15%
+[Finetune 4] train_acc=90.72%, val_acc=90.47%
+[After finetuning] train_acc=90.72%, val_acc=90.47%, total_LUT_entries=24000, compression=12.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->3, entries 128000->16000
+  Layer 1: LUTs 1000->1000, k 6->3, entries 64000->8000
+bit rate:  0.3
+lut_rate:  0.9
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.9...
+  Total LUTs: 3000 -> 2700 (90.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->2000, keep=100.00%, prune=0.00%, share_after=74.07% of remaining LUTs
+  Layer 1: LUTs 1000->700, keep=70.00%, prune=30.00%, share_after=25.93% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=79.35%, val_acc=79.72%
+[Finetune 1] train_acc=85.17%, val_acc=85.30%
+[Finetune 2] train_acc=88.27%, val_acc=88.65%
+[Finetune 3] train_acc=90.05%, val_acc=89.99%
+[Finetune 4] train_acc=89.18%, val_acc=89.36%
+[After finetuning] train_acc=89.18%, val_acc=89.36%, total_LUT_entries=21600, compression=11.25% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->2000, k 6->3, entries 128000->16000
+  Layer 1: LUTs 1000->700, k 6->3, entries 64000->5600
+bit rate:  0.3
+lut_rate:  0.8
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.8...
+  Total LUTs: 3000 -> 2400 (80.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1925, keep=96.25%, prune=3.75%, share_after=80.21% of remaining LUTs
+  Layer 1: LUTs 1000->475, keep=47.50%, prune=52.50%, share_after=19.79% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=72.25%, val_acc=73.06%
+[Finetune 1] train_acc=84.53%, val_acc=85.37%
+[Finetune 2] train_acc=87.20%, val_acc=87.45%
+[Finetune 3] train_acc=88.51%, val_acc=88.81%
+[Finetune 4] train_acc=89.16%, val_acc=89.27%
+[After finetuning] train_acc=89.16%, val_acc=89.27%, total_LUT_entries=19200, compression=10.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1925, k 6->3, entries 128000->15400
+  Layer 1: LUTs 1000->475, k 6->3, entries 64000->3800
+bit rate:  0.3
+lut_rate:  0.7
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.7...
+  Total LUTs: 3000 -> 2100 (70.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1635, keep=81.75%, prune=18.25%, share_after=77.86% of remaining LUTs
+  Layer 1: LUTs 1000->465, keep=46.50%, prune=53.50%, share_after=22.14% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=72.86%, val_acc=73.89%
+[Finetune 1] train_acc=84.62%, val_acc=85.41%
+[Finetune 2] train_acc=86.26%, val_acc=86.72%
+[Finetune 3] train_acc=88.77%, val_acc=89.09%
+[Finetune 4] train_acc=89.64%, val_acc=90.01%
+[After finetuning] train_acc=89.64%, val_acc=90.01%, total_LUT_entries=16800, compression=8.75% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1635, k 6->3, entries 128000->13080
+  Layer 1: LUTs 1000->465, k 6->3, entries 64000->3720
+bit rate:  0.3
+lut_rate:  0.6
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.6...
+  Total LUTs: 3000 -> 1800 (60.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1342, keep=67.10%, prune=32.90%, share_after=74.56% of remaining LUTs
+  Layer 1: LUTs 1000->458, keep=45.80%, prune=54.20%, share_after=25.44% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=70.70%, val_acc=71.51%
+[Finetune 1] train_acc=81.72%, val_acc=82.32%
+[Finetune 2] train_acc=86.29%, val_acc=86.75%
+[Finetune 3] train_acc=87.16%, val_acc=87.77%
+[Finetune 4] train_acc=88.45%, val_acc=88.70%
+[After finetuning] train_acc=88.45%, val_acc=88.70%, total_LUT_entries=14400, compression=7.50% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1342, k 6->3, entries 128000->10736
+  Layer 1: LUTs 1000->458, k 6->3, entries 64000->3664
+bit rate:  0.3
+lut_rate:  0.5
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.5...
+  Total LUTs: 3000 -> 1500 (50.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->1045, keep=52.25%, prune=47.75%, share_after=69.67% of remaining LUTs
+  Layer 1: LUTs 1000->455, keep=45.50%, prune=54.50%, share_after=30.33% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=67.67%, val_acc=68.32%
+[Finetune 1] train_acc=79.60%, val_acc=80.42%
+[Finetune 2] train_acc=83.85%, val_acc=84.00%
+[Finetune 3] train_acc=85.49%, val_acc=85.48%
+[Finetune 4] train_acc=85.81%, val_acc=85.68%
+[After finetuning] train_acc=85.81%, val_acc=85.68%, total_LUT_entries=12000, compression=6.25% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->1045, k 6->3, entries 128000->8360
+  Layer 1: LUTs 1000->455, k 6->3, entries 64000->3640
+bit rate:  0.3
+lut_rate:  0.4
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.4...
+  Total LUTs: 3000 -> 1200 (40.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->750, keep=37.50%, prune=62.50%, share_after=62.50% of remaining LUTs
+  Layer 1: LUTs 1000->450, keep=45.00%, prune=55.00%, share_after=37.50% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=55.64%, val_acc=56.12%
+[Finetune 1] train_acc=75.57%, val_acc=75.83%
+[Finetune 2] train_acc=81.22%, val_acc=81.53%
+[Finetune 3] train_acc=82.47%, val_acc=82.79%
+[Finetune 4] train_acc=84.77%, val_acc=84.82%
+[After finetuning] train_acc=84.77%, val_acc=84.82%, total_LUT_entries=9600, compression=5.00% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->750, k 6->3, entries 128000->6000
+  Layer 1: LUTs 1000->450, k 6->3, entries 64000->3600
+bit rate:  0.3
+lut_rate:  0.3
+[Before pruneC] train_acc=99.78%, val_acc=96.80%, total_LUT_entries=192000
+Bit budgets:
+  Layer 0: k 6 -> 3
+  Layer 1: k 6 -> 3
+Layer 0: k_old=6 -> k_new=3, table shape: (num_luts=2000, 2^6) -> 2^3
+Layer 1: k_old=6 -> k_new=3, table shape: (num_luts=1000, 2^6) -> 2^3
+Collecting layer activations after k-shrink...
+Applying GLOBAL LUT pruning with lut_keep_global=0.3...
+  Total LUTs: 3000 -> 900 (30.00% of original LUT count)
+Per-layer LUT pruning allocation (global view):
+  Layer 0: LUTs 2000->453, keep=22.65%, prune=77.35%, share_after=50.33% of remaining LUTs
+  Layer 1: LUTs 1000->447, keep=44.70%, prune=55.30%, share_after=49.67% of remaining LUTs
+Finetuning after C-pruning + global LUT pruning...
+[Finetune 0] train_acc=42.72%, val_acc=41.72%
+[Finetune 1] train_acc=50.84%, val_acc=50.64%
+[Finetune 2] train_acc=66.75%, val_acc=66.96%
+[Finetune 3] train_acc=72.20%, val_acc=72.06%
+[Finetune 4] train_acc=75.08%, val_acc=74.79%
+[After finetuning] train_acc=75.08%, val_acc=74.79%, total_LUT_entries=7200, compression=3.75% of original
+Per-layer LUT stats before/after:
+  Layer 0: LUTs 2000->453, k 6->3, entries 128000->3624
+  Layer 1: LUTs 1000->447, k 6->3, entries 64000->3576
+(ychen-env) yi-chunchen@Yi-Chuns-MacBook-Air Adaptive_WNN % 
