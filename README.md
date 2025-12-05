@@ -1,12 +1,14 @@
-## python:
+## python 2-layer version:
 initialization: <br/>
 Adaptive_WNN> python -m src.train <br/>
-evaluation: <br/>
-Adaptive_WNN> python -m importer <br/>
 
+## python lightwieght:
+initialization: <br/>
+Adaptive_WNN> python -m src.train_lightweight <br/>
 
-Adaptive_WNN>python -m src.train <br/>
-export files Adaptive_WNN/src/exports/foldername
+Modify keep_ratio to change the pruning rate <br/>
+keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.5, min_keep=64)
+
 
 ## FPGA usage:
 ### addr_bits_per_lut.json 
