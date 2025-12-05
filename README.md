@@ -4,7 +4,7 @@ Adaptive_WNN> python -m src.train <br/>
 
 ## python lightwieght:
 initialization: <br/>
-Adaptive_WNN> python -m src.train_2 <br/>
+Adaptive_WNN> python -m src.train_lightweight <br/>
 
 Modify keep_ratio to change the pruning rate <br/>
 keep_idx = build_pruned_classifier(model, importance, keep_ratio=0.5, min_keep=64)
