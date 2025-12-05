@@ -1414,7 +1414,12 @@ def prune_wnn_with_budget_global(
             f"share_after={share_after*100:.2f}% of remaining LUTs"
         )
 
-    
+    train_loss, train_acc = eval_epoch(model, train_loader, device)
+    val_loss, val_acc = eval_epoch(model, val_loader, device)
+    print(
+        f"[Before finetuning] train_acc={train_acc*100:.2f}%, "
+        f"val_acc={val_acc*100:.2f}% "
+    )
 
     # ---- 4) finetune ----
     if finetune_epochs > 0:
