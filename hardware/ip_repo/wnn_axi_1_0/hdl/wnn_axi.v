@@ -5,7 +5,7 @@ module wnn_axi #
     parameter integer C_S00_AXI_DATA_WIDTH = 32,
     parameter integer C_S00_AXI_ADDR_WIDTH = 14,
     // BRAM-B address width
-    parameter integer ADDR_BW              = 15,
+    parameter integer ADDR_BW              = 14,
     parameter integer C_S_AXIS_TDATA_WIDTH = 32
 )
 (
@@ -112,7 +112,7 @@ module wnn_axi #
 
     // WNN CORE
     wnn_core #(
-        .NUM_LUTS    (500),
+        .NUM_LUTS    (250),
         .ADDR_BITS   (6),
         .N_CLASSES   (10),
         .COUNT_BITS  (8),
@@ -132,7 +132,7 @@ module wnn_axi #
         .ivec_wen   (internal_ram_wen),
         
         // Constant Masks
-        .enable_mask      ({500{1'b1}}),
+        .enable_mask      ({250{1'b1}}),
         .addr_mask        ({6{1'b1}}),
 
         // Weight BRAM Interface

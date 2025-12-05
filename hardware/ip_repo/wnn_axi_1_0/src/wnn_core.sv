@@ -1,7 +1,7 @@
 `timescale 1 ns / 1 ps 
 
 module wnn_core #( 
-    parameter int NUM_LUTS    = 500, 
+    parameter int NUM_LUTS    = 250, 
     parameter int ADDR_BITS   = 6,
     parameter int N_CLASSES   = 10,
     parameter int COUNT_BITS  = 8,

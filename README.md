@@ -100,7 +100,7 @@ Upload the contents of the `pynq/` folder to your PYNQ board (e.g., via Jupyter 
 
 Upon successful execution, the notebook will report classification accuracy and hardware throughput. Current benchmark metrics on Arty Z7-20:
 
-* **Accuracy:** ~95.64%
-* **Throughput:** ~15,226 FPS
-* **Latency:** ~66 µs per image
-* **Power (PL Dynamic):** ~155 mW
+* **Accuracy:** ~95.97%
+* **Throughput:** ~26,124 FPS
+* **Latency:** ~38 µs per image
+* **Power (PL Dynamic):** ~138 mW
